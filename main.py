@@ -41,7 +41,22 @@ class Aircraft:
     
     
 #Inputs:
-aircraft = []
+aircraft = [
+    Aircraft(10*60,"Medium","Takeoff"),
+    Aircraft(15*60,"Heavy","Takeoff"),
+    Aircraft(30*60,"Heavy","Takeoff"),
+    Aircraft(45*60,"Medium","Takeoff"),
+    Aircraft(70*60,"Heavy","Takeoff"),
+    Aircraft(90*60,"Heavy","Takeoff"),
+    Aircraft(12*60,"Medium","Landing"),
+    Aircraft(24*60,"Heavy","Landing"),
+    Aircraft(48*60,"Medium","Landing"),
+    Aircraft(60*60,"Medium","Landing"),
+    Aircraft(72*60,"Heavy","Landing"),
+    Aircraft(96*60,"Heavy","Landing")
+
+
+]
 planning_horizon = 0
 runway_unsafe_times = [1500,1500]
 
@@ -90,8 +105,8 @@ cost_coefficient = {"Medium":1,"Heavy":3,"Super":4}
 runway_travel_matrix = [[0,600,1200],[900,0,1200],[1500,1500,0]] #This +20min is the value of Q
 
 #Run-specific Constants
-snow_removal_groups:int = 0
-runways:int = 0
+snow_removal_groups:int = 1
+runways:int = 2
 
 
 event_times = {}
@@ -103,11 +118,11 @@ clearing_times = {}
 for r in range(0,runways):
     clearing_times[r] = model.addVar(name="v"+str(r))
 
-count = 0
 i_before_j = {}
-for i in aircraft + list(range(runways)):
-    i_before_j[count] = model.addVar(vtype=GRB.BINARY,name="delta_"+str(count))
-    count += 1
+for i in list(range(runways+len(aircraft))):
+    for j in list(range(runways+len(aircraft))):
+        if i != j:
+            i_before_j[i,j] = model.addVar(vtype=GRB.BINARY,name="delta_"+str(i)+"_"+str(j)) 
 
 yar = {}
 for i in aircraft:
@@ -140,7 +155,10 @@ model.setObjective(obj,GRB.MINIMIZE)
 
 
 for i in aircraft:
-    model.addConstr(i.target_time < event_times[aircraft.index(i)] < last_time(i),"C0_"+str(aircraft.index(i)))
+    model.addConstr(i.target_time <= event_times[aircraft.index(i)])
+
+for i in aircraft:
+    model.addConstr(event_times[aircraft.index(i)] <= last_time(i),"C0_"+str(aircraft.index(i)))
 
 for i in i_before_j.keys():
     for j in i_before_j.keys():
@@ -193,3 +211,4 @@ for i in range(len(aircraft)):
 
 
 
+model.optimize()
