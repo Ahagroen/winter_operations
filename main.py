@@ -175,4 +175,21 @@ for i in range(runways):
 for i in range(runways):
     for j in range(runways):
         if i != j:
-            model.addConstr(clearing_times[j] >= clearing_times[i] + qrs)
+            model.addConstr(clearing_times[j] >= clearing_times[i] + (t_snow_removal+runway_travel_matrix[i][j])*psi[i,j]-100000*i_before_j[j,i])
+
+
+for i in range(runways):
+    for j in aircraft:
+        model.addConstr(clearing_times[i] >= event_times[aircraft.index(j)] + sep_a_cleaning*yar[i,aircraft.index(j)]-100000*i_before_j[i,aircraft.index(j)])
+
+for i in range(runways):
+    for j in aircraft:
+        model.addConstr(event_times[aircraft.index(j)] >= clearing_times[i] + t_snow_removal*yar[i,aircraft.index(j)]-100000*i_before_j[aircraft.index(j),i])
+
+
+for i in range(len(aircraft)):
+    for j in range(runways):
+        model.addConstr(event_times[i] <= runway_unsafe_times[j] + 100000*(1-yar[i,j]) + 100000*i_before_j[j,i])
+
+
+
