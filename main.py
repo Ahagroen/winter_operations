@@ -106,7 +106,7 @@ runway_travel_matrix = [[0,600,1200],[900,0,1200],[1500,1500,0]] #This +20min is
 
 #Run-specific Constants
 snow_removal_groups:int = 1
-runways:int = 2
+runways:list[str] = ["A","B"]
 
 
 event_times = {}
@@ -115,18 +115,18 @@ for i in aircraft:
     event_times[aircraft.index(i)] = model.addVar(name="x_"+str(aircraft.index(i)))
 
 clearing_times = {}
-for r in range(0,runways):
+for r in runways:
     clearing_times[r] = model.addVar(name="v"+str(r))
 
 i_before_j = {}
-for i in list(range(runways+len(aircraft))):
-    for j in list(range(runways+len(aircraft))):
+for i in list(range(len(aircraft))) + runways:
+    for j in list(range(len(aircraft))) + runways:
         if i != j:
             i_before_j[i,j] = model.addVar(vtype=GRB.BINARY,name="delta_"+str(i)+"_"+str(j)) 
 
 yar = {}
 for i in aircraft:
-    for j in range(runways):
+    for j in runways:
         yar[aircraft.index(i),j] = model.addVar(vtype=GRB.BINARY,name="y_"+str(aircraft.index(i))+"_"+str(j))
 zij = {}
 for i in aircraft:
@@ -135,13 +135,13 @@ for i in aircraft:
             zij[aircraft.index(i),aircraft.index(j)] = model.addVar(vtype=GRB.BINARY,name="z_"+str(aircraft.index(i))+str(aircraft.index(j)))
 
 rho = {}
-for i in range(runways):
+for i in runways:
     for j in range(snow_removal_groups):
         rho[i,j] = model.addVar(vtype=GRB.BINARY,name="rho_"+str(i)+"_"+str(j))
 
 psi = {}
-for i in range(runways):
-    for j in range(runways):
+for i in runways:
+    for j in runways:
         if i != j:
             psi[i,j] = model.addVar(vtype=GRB.BINARY,name="psi_"+str(i)+"_"+str(j))
 
@@ -166,12 +166,12 @@ for i in i_before_j.keys():
             model.addConstr(i_before_j[i]+i_before_j[j] ==1,"C1_"+str(i)+"_"+str(j))
 
 for i in aircraft:
-    model.addConstr(quicksum(yar[aircraft.index(i),j] for j in range(runways)) == 1)
+    model.addConstr(quicksum(yar[aircraft.index(i),j] for j in runways) == 1)
 
 for i in aircraft:
     for j in aircraft:
         if i != j:
-            for k in range(runways):
+            for k in runways:
                 model.addConstr(zij[aircraft.index(i),aircraft.index(j)] >= yar[aircraft.index(i),k] + yar[aircraft.index(j),k] -1)
 
 
@@ -180,34 +180,34 @@ for i in aircraft:
         if i != j:
             model.addConstr(event_times[aircraft.index(j)] >= event_times[aircraft.index(i)] + seperation_time(i,j)*zij[aircraft.index(i),aircraft.index(j)] - 100000*i_before_j[aircraft.index(j),aircraft.index(i)])
 
-for i in range(runways):
+for i in runways:
     model.addConstr(quicksum(rho[i,j] for j in range(snow_removal_groups)) == 1)
 
-for i in range(runways):
-    for j in range(runways):
+for i in runways:
+    for j in runways:
         if i != j:
             for k in range(snow_removal_groups):
                 model.addConstr(psi[i,j] >= rho[i,k] + rho[j,k] -1 )
 
 
-for i in range(runways):
-    for j in range(runways):
+for i in runways:
+    for j in runways:
         if i != j:
-            model.addConstr(clearing_times[j] >= clearing_times[i] + (t_snow_removal+runway_travel_matrix[i][j])*psi[i,j]-100000*i_before_j[j,i])
+            model.addConstr(clearing_times[j] >= clearing_times[i] + (t_snow_removal+runway_travel_matrix[runways.index(i)][runways.index(j)])*psi[i,j]-100000*i_before_j[j,i])
 
 
-for i in range(runways):
+for i in runways:
     for j in aircraft:
-        model.addConstr(clearing_times[i] >= event_times[aircraft.index(j)] + sep_a_cleaning*yar[i,aircraft.index(j)]-100000*i_before_j[i,aircraft.index(j)])
+        model.addConstr(clearing_times[i] >= event_times[aircraft.index(j)] + sep_a_cleaning*yar[aircraft.index(j),i]-100000*i_before_j[i,aircraft.index(j)])
 
-for i in range(runways):
+for i in runways:
     for j in aircraft:
-        model.addConstr(event_times[aircraft.index(j)] >= clearing_times[i] + t_snow_removal*yar[i,aircraft.index(j)]-100000*i_before_j[aircraft.index(j),i])
+        model.addConstr(event_times[aircraft.index(j)] >= clearing_times[i] + t_snow_removal*yar[aircraft.index(j),i]-100000*i_before_j[aircraft.index(j),i])
 
 
 for i in range(len(aircraft)):
-    for j in range(runways):
-        model.addConstr(event_times[i] <= runway_unsafe_times[j] + 100000*(1-yar[i,j]) + 100000*i_before_j[j,i])
+    for j in runways:
+        model.addConstr(event_times[i] <= runway_unsafe_times[runways.index(j)] + 100000*(1-yar[i,j]) + 100000*i_before_j[j,i])
 
 
 
