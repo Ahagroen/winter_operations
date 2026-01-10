@@ -1,5 +1,5 @@
-from dataclasses import dataclass
-from turtle import clear
+from dataclasses import dataclass, field
+from itertools import count
 from typing import Literal
 from gurobipy import GRB, LinExpr, Model, quicksum
 
@@ -35,6 +35,7 @@ model = Model("runway_winter")
 
 @dataclass
 class Aircraft:
+    identifier: int = field(default_factory=count().__next__, init=False)
     target_time:int
     ac_class:Literal["Medium","Heavy","Super"]
     direction:Literal["Takeoff","Landing"]
@@ -43,8 +44,17 @@ class Aircraft:
 #Inputs:
 aircraft = [
     Aircraft(10*60,"Medium","Takeoff"),
-    Aircraft(15*60,"Heavy","Takeoff"),
-    Aircraft(30*60,"Heavy","Takeoff"),
+    Aircraft(10*60,"Heavy","Takeoff"),
+    Aircraft(10*60,"Heavy","Takeoff"),
+    Aircraft(10*60,"Medium","Takeoff"),
+    Aircraft(10*60,"Heavy","Takeoff"),
+    Aircraft(10*60,"Heavy","Takeoff"),
+    Aircraft(10*60,"Medium","Takeoff"),
+    Aircraft(10*60,"Heavy","Takeoff"),
+    Aircraft(10*60,"Heavy","Takeoff"),
+    Aircraft(10*60,"Medium","Takeoff"),
+    Aircraft(10*60,"Heavy","Takeoff"),
+    Aircraft(10*60,"Heavy","Takeoff"),
     Aircraft(45*60,"Medium","Takeoff"),
     Aircraft(70*60,"Heavy","Takeoff"),
     Aircraft(90*60,"Heavy","Takeoff"),
@@ -57,7 +67,7 @@ aircraft = [
 
 
 ]
-planning_horizon = 0
+planning_horizon = 120*60
 runway_unsafe_times = [1500,1500]
 
 
@@ -160,10 +170,10 @@ for i in aircraft:
 for i in aircraft:
     model.addConstr(event_times[aircraft.index(i)] <= last_time(i),"C0_"+str(aircraft.index(i)))
 
-for i in i_before_j.keys():
-    for j in i_before_j.keys():
+for i in list(range(len(aircraft))) + runways:
+    for j in list(range(len(aircraft))) + runways:
         if i != j:
-            model.addConstr(i_before_j[i]+i_before_j[j] ==1,"C1_"+str(i)+"_"+str(j))
+            model.addConstr(i_before_j[i,j]+i_before_j[j,i] ==1,"C1_"+str(i)+"_"+str(j))
 
 for i in aircraft:
     model.addConstr(quicksum(yar[aircraft.index(i),j] for j in runways) == 1)
@@ -208,7 +218,6 @@ for i in runways:
 for i in range(len(aircraft)):
     for j in runways:
         model.addConstr(event_times[i] <= runway_unsafe_times[runways.index(j)] + 100000*(1-yar[i,j]) + 100000*i_before_j[j,i])
-
 
 
 model.optimize()
