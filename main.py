@@ -1,7 +1,11 @@
+from cProfile import label
 from dataclasses import dataclass, field
 from itertools import count
 from typing import Literal
 from gurobipy import GRB, LinExpr, Model, quicksum
+import csv
+
+from matplotlib import pyplot
 
 model = Model("runway_winter")
 
@@ -40,36 +44,36 @@ class Aircraft:
     ac_class:Literal["Medium","Heavy","Super"]
     direction:Literal["Takeoff","Landing"]
     
-    
+def map_type(type):
+    match type:
+        case "H":
+            return "Heavy"
+        case "M":
+            return "Medium"
+        case "S":
+            return "Super"
+        case _:
+            raise RuntimeError("Invalid type in csv")
+
+def map_direction(direction):
+    match direction:
+        case "L":
+            return "Landing"
+        case "T":
+            return "Takeoff"
+        case _:
+            raise RuntimeError("Invalid direction in csv")
+def load_aircraft(filename:str)->list[Aircraft]:
+    carry = []
+    with open(filename,"r") as fs:
+        reader = csv.reader(fs)
+        for row in reader:
+            carry.append(Aircraft(int(row[0])*60,map_type(row[1]),map_direction(row[2])))
+    return carry
 #Inputs:
-aircraft = [
-    Aircraft(10*60,"Medium","Takeoff"),
-    Aircraft(10*60,"Heavy","Takeoff"),
-    Aircraft(10*60,"Heavy","Takeoff"),
-    Aircraft(10*60,"Medium","Takeoff"),
-    Aircraft(10*60,"Heavy","Takeoff"),
-    Aircraft(10*60,"Heavy","Takeoff"),
-    Aircraft(10*60,"Medium","Takeoff"),
-    Aircraft(10*60,"Heavy","Takeoff"),
-    Aircraft(10*60,"Heavy","Takeoff"),
-    Aircraft(10*60,"Medium","Takeoff"),
-    Aircraft(10*60,"Heavy","Takeoff"),
-    Aircraft(10*60,"Heavy","Takeoff"),
-    Aircraft(45*60,"Medium","Takeoff"),
-    Aircraft(70*60,"Heavy","Takeoff"),
-    Aircraft(90*60,"Heavy","Takeoff"),
-    Aircraft(12*60,"Medium","Landing"),
-    Aircraft(24*60,"Heavy","Landing"),
-    Aircraft(48*60,"Medium","Landing"),
-    Aircraft(60*60,"Medium","Landing"),
-    Aircraft(72*60,"Heavy","Landing"),
-    Aircraft(96*60,"Heavy","Landing")
-
-
-]
-planning_horizon = 120*60
-runway_unsafe_times = [1500,1500]
-
+planning_horizon = 140*60
+runway_unsafe_times = [3000,1500]
+aircraft = load_aircraft("schipol1d.csv")
 
 #Constants
 def last_time(ac:Aircraft):
@@ -109,7 +113,7 @@ def seperation_time(ac1:Aircraft,ac2:Aircraft):
     return matrix[a][b]
 
 
-sep_a_cleaning = 60 #No idea, not in literature
+sep_a_cleaning = 120 #No idea, not in literature
 t_snow_removal = 20*60
 cost_coefficient = {"Medium":1,"Heavy":3,"Super":4}
 runway_travel_matrix = [[0,600,1200],[900,0,1200],[1500,1500,0]] #This +20min is the value of Q
@@ -221,3 +225,36 @@ for i in range(len(aircraft)):
 
 
 model.optimize()
+
+def match_runway(flight):
+    return [x for x in runways if yar[flight.identifier,x].X == 1][0]
+
+runway_flights = {}
+delays = {}
+for i in runways:
+    runway_flights[i] = {"Takeoff":[],"Landing":[]}
+    delays[i] = []
+for i in event_times.keys():
+    runway_flights[match_runway(aircraft[i])][aircraft[i].direction].append(event_times[i].X)
+    if event_times[i].X > aircraft[i].target_time:
+        delays[match_runway(aircraft[i])].append(event_times[i].X)
+    print(f"Flight: {aircraft[i].identifier} occurs at {event_times[i].X} on runway {match_runway(aircraft[i])}")
+
+
+counter = 0
+for i in runway_flights.keys():
+    pyplot.scatter(runway_flights[i]["Takeoff"],[counter]*len(runway_flights[i]["Takeoff"]),label="Takeoff")
+    pyplot.scatter(runway_flights[i]["Landing"],[counter]*len(runway_flights[i]["Landing"]),label="Landing")
+    pyplot.plot([clearing_times[i].X,clearing_times[i].X+20*60],[counter]*2,label="Clearing")
+    counter +=1
+
+pyplot.legend()
+pyplot.show()
+
+counter = 0
+for i in delays.keys():
+    pyplot.scatter(delays[i],[counter]*len(delays[i]),label="Takeoff")
+    counter +=1
+
+pyplot.legend()
+pyplot.show()
