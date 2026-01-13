@@ -71,8 +71,8 @@ def load_aircraft(filename:str)->list[Aircraft]:
     return carry
 #Inputs:
 planning_horizon = 140*60
-runway_unsafe_times = [3000,1500]
-aircraft = load_aircraft("schipol1d.csv")
+runway_unsafe_times = [120,120]
+aircraft = load_aircraft("test_file_plow_feasible.csv")
 
 #Constants
 def last_time(ac:Aircraft):
