@@ -69,10 +69,35 @@ def load_aircraft(filename:str)->list[Aircraft]:
         for row in reader:
             carry.append(Aircraft(int(row[0])*60,map_type(row[1]),map_direction(row[2])))
     return carry
-#Inputs:
-planning_horizon = 140*60
-runway_unsafe_times = [120,120]
-aircraft = load_aircraft("test_file_plow_feasible.csv")
+#Inputs - Large Scale:
+if False:
+    planning_horizon = 140*60
+    runway_unsafe_times = [1200,1500]
+    aircraft = load_aircraft("schipol1d.csv")
+
+#Inputs - Delayed arrival:
+if True:
+    planning_horizon = 60*60
+    runway_unsafe_times = [1200,1500]
+    aircraft = load_aircraft("test_file_delay.csv")
+
+#Inputs - Infeasible (too long landing delay):
+if False:
+    planning_horizon = 60*60
+    runway_unsafe_times = [120,120]
+    aircraft = load_aircraft("test_file_infeasible.csv")
+
+#Inputs - Feasible (Same as above but takeoff so unlimited delay):
+if False:
+    planning_horizon = 60*60
+    runway_unsafe_times = [120,120]
+    aircraft = load_aircraft("test_file_feasible.csv")
+
+#Inputs - Delayed until after plowing:
+if False:
+    planning_horizon = 60*60
+    runway_unsafe_times = [120,120]
+    aircraft = load_aircraft("test_file_plow.csv")
 
 #Constants
 def last_time(ac:Aircraft):
