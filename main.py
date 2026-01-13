@@ -1,4 +1,3 @@
-from cProfile import label
 from dataclasses import dataclass, field
 from itertools import count
 from typing import Literal
@@ -233,12 +232,13 @@ runway_flights = {}
 delays = {}
 for i in runways:
     runway_flights[i] = {"Takeoff":[],"Landing":[]}
-    delays[i] = []
 for i in event_times.keys():
     runway_flights[match_runway(aircraft[i])][aircraft[i].direction].append(event_times[i].X)
     if event_times[i].X > aircraft[i].target_time:
-        delays[match_runway(aircraft[i])].append(event_times[i].X)
-    print(f"Flight: {aircraft[i].identifier} occurs at {event_times[i].X} on runway {match_runway(aircraft[i])}")
+        delays[aircraft[i].identifier] = (aircraft[i].target_time,event_times[i].X)
+        print(f"Flight: {aircraft[i].identifier} occurs at {event_times[i].X} on runway {match_runway(aircraft[i])} - Delay of {event_times[i].X - aircraft[i].target_time}")
+    else:
+        print(f"Flight: {aircraft[i].identifier} occurs at {event_times[i].X} on runway {match_runway(aircraft[i])}")
 
 
 counter = 0
@@ -253,8 +253,7 @@ pyplot.show()
 
 counter = 0
 for i in delays.keys():
-    pyplot.scatter(delays[i],[counter]*len(delays[i]),label="Takeoff")
-    counter +=1
+    pyplot.plot(range(int(delays[i][0]),int(delays[i][1])),range(0,int(delays[i][1]-delays[i][0])),label=i)
 
 pyplot.legend()
 pyplot.show()
