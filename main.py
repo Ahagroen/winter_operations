@@ -167,13 +167,13 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
             return planning_horizon
         else:
             return ac.target_time+20*60
-        
-    event_times = {}
 
+    #Decision Vars  
+    event_times = {} #Xa
     for i in aircraft:
         event_times[aircraft.index(i)] = model.addVar(name="x_"+str(aircraft.index(i)))
 
-    clearing_times = {}
+    clearing_times = {} #Vr
     for r in runways:
         clearing_times[r] = model.addVar(name="v"+str(r))
 
@@ -182,6 +182,7 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
         for j in list(range(len(aircraft))) + runways:
             if i != j:
                 i_before_j[i,j] = model.addVar(vtype=GRB.BINARY,name="delta_"+str(i)+"_"+str(j)) 
+                #Pre-solve, based on paper
                 if isinstance(i,int) and isinstance(j,int):
                     if aircraft[i].direction == "Landing" and aircraft[j].target_time > 20*60+aircraft[i].target_time:
                         i_before_j[i,j].start = 1
