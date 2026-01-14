@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from enum import Enum
+from functools import cache
 from itertools import count
 from typing import Literal
 from gurobipy import GRB, LinExpr, Model, quicksum
@@ -62,6 +63,8 @@ def map_direction(direction):
             return "Takeoff"
         case _:
             raise RuntimeError("Invalid direction in csv")
+        
+@cache
 def load_aircraft(filename:str)->list[Aircraft]:
     carry = []
     with open(filename,"r") as fs:
@@ -110,9 +113,10 @@ class Mode(Enum):
     feasible_takeoff_delay = 3
     delayed_after_plow = 4
 
-def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,num_plows:int=2,runway_unsafe_times:list[int]=[1500,1500,1500]):
+def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,num_plows:int=2,runway_unsafe_times:list[int]=[1500,1500,1500,1500,1500]):
     model = Model("runway_winter")
-    model.setParam('TimeLimit', 5*60)
+    model.setParam('TimeLimit', 2*60)
+    model.setParam("OutputFlag",0)
 
 
     match mode:
@@ -155,11 +159,11 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
     sep_a_cleaning = 120 #No idea, not in literature
     t_snow_removal = plowing_time
     cost_coefficient = {"Medium":1,"Heavy":3,"Super":4}
-    runway_travel_matrix = [[0,600,1200],[900,0,1200],[1500,1500,0]] #This +20min is the value of Q
+    runway_travel_matrix = [[0,600,1200,900,1200],[900,0,1200,1200,600],[1500,1500,0,600,900],[1500,900,900,0,1500],[600,1200,900,1200,0]] #This +20min is the value of Q
 
     #Run-specific Constants
     snow_removal_groups:int = num_plows
-    runways:list[str] = ["A","B","C"]
+    runways:list[str] = ["A","B","C","D","E"]
     runways = runways[0:num_runways]
 
     def last_time(ac:Aircraft):
@@ -171,11 +175,11 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
     #Decision Vars  
     event_times = {} #Xa
     for i in aircraft:
-        event_times[aircraft.index(i)] = model.addVar(name="x_"+str(aircraft.index(i)))
+        event_times[aircraft.index(i)] = model.addVar(vtype=GRB.INTEGER,name="x_"+str(aircraft.index(i)))
 
     clearing_times = {} #Vr
     for r in runways:
-        clearing_times[r] = model.addVar(name="v"+str(r))
+        clearing_times[r] = model.addVar(vtype=GRB.INTEGER,name="v"+str(r))
 
     i_before_j = {}
     for i in list(range(len(aircraft))) + runways:
@@ -278,7 +282,10 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
     model.optimize()
 
     def match_runway(flight):
-        return [x for x in runways if yar[flight.identifier,x].X == 1][0]
+        try:
+            return [x for x in runways if yar[flight.identifier,x].X == 1][0]
+        except IndexError:
+            [print(x) for x in [yar[flight.identifier,y].X for y in runways]]
 
     runway_flights = {}
     delays = {}
@@ -314,10 +321,35 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
         pyplot.legend()
         pyplot.show()
     else:
+        counter = 0
+        for i in runway_flights.keys():
+            pyplot.scatter(runway_flights[i]["Takeoff"],[counter]*len(runway_flights[i]["Takeoff"]),label="Takeoff")
+            pyplot.scatter(runway_flights[i]["Landing"],[counter]*len(runway_flights[i]["Landing"]),label="Landing")
+            pyplot.plot([clearing_times[i].X,clearing_times[i].X+20*60],[counter]*2,label="Clearing")
+            counter +=1
+
+        pyplot.legend()
+        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-times")
+        pyplot.close()
+        counter = 0
+        for i in delays.keys():
+            pyplot.plot(range(int(delays[i][0]),int(delays[i][1])),range(0,int(delays[i][1]-delays[i][0])),label=i)
+
+        pyplot.legend()
+        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-delays")
+        pyplot.close()
         return total_delay,model.ObjVal
 
 def sensitivity_analysis():
-    pass
+    results_runways = []
+    for i in [2,3,4,5]:
+        for j in range(1,i+1):
+            print(f"{i} runways, {j} plows")
+            results_runways.append((i,j,run_model(Mode.large_scale,True,num_runways=i,num_plows=j)))
+    for i in results_runways:
+        print(f"With {i[0]} runways and {i[1]} plows: total non-weighted delay: {i[2][0]}, total weighted delay: {i[2][1]}")
+    
 
 if __name__ == "__main__":
-    run_model(Mode.large_scale,False)
+    sensitivity_analysis()
+    # run_model(Mode.large_scale,False,num_plows=3,num_runways=5)
