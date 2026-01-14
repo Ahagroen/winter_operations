@@ -1,3 +1,4 @@
+from collections import Counter
 from dataclasses import dataclass, field
 from enum import Enum
 from functools import cache
@@ -112,10 +113,11 @@ class Mode(Enum):
     infeasible_landing_delay = 2
     feasible_takeoff_delay = 3
     delayed_after_plow = 4
+    infeasible_one_plow = 5
 
-def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,num_plows:int=2,runway_unsafe_times:list[int]=[1500,1500,1500,1500,1500]):
+def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,num_plows:int=2,runway_unsafe_times:list[int]=[1500,1500,1500,1500,1500],snow_cond:int=0):
     model = Model("runway_winter")
-    model.setParam('TimeLimit', 2*60)
+    model.setParam('TimeLimit', 3*60)
     model.setParam("OutputFlag",0)
 
 
@@ -148,6 +150,12 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
         case Mode.delayed_after_plow:
             #Inputs - Delayed until after plowing:
             planning_horizon = 60*60
+            runway_unsafe_times = [120,120]
+            num_plows = 1
+            num_runways = 2
+            aircraft = load_aircraft("test_file_plow.csv")
+        case Mode.infeasible_one_plow:
+            planning_horizon = 25*60
             runway_unsafe_times = [120,120]
             num_plows = 1
             num_runways = 2
@@ -282,18 +290,15 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
     model.optimize()
 
     def match_runway(flight):
-        try:
-            return [x for x in runways if yar[flight.identifier,x].X == 1][0]
-        except IndexError:
-            [print(x) for x in [yar[flight.identifier,y].X for y in runways]]
+        return [x for x in runways if yar[flight.identifier,x].X == 1][0]
 
     runway_flights = {}
     delays = {}
     total_delay = 0
     for i in runways:
-        runway_flights[i] = {"Takeoff":[],"Landing":[]}
+        runway_flights = {"Takeoff":[],"Landing":[]}
     for i in event_times.keys():
-        runway_flights[match_runway(aircraft[i])][aircraft[i].direction].append(event_times[i].X)
+        runway_flights[aircraft[i].direction].append((event_times[i].X,runways.index(match_runway(aircraft[i]))))
         if event_times[i].X > aircraft[i].target_time:
             total_delay += event_times[i].X - aircraft[i].target_time
             delays[aircraft[i].identifier] = (aircraft[i].target_time,event_times[i].X)
@@ -303,53 +308,53 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
             if not returns:
                 print(f"Flight: {aircraft[i].identifier} occurs at {event_times[i].X} on runway {match_runway(aircraft[i])}")
     print(f"Total (non cost adjusted) delay: {total_delay}, Cost adjusted delay: {model.ObjVal}")
+
+    for i in runway_flights.keys():
+        if len(runway_flights[i]) == 0:
+            continue
+        x,y = zip(*runway_flights[i])
+        pyplot.scatter(x,y,label=i)
+    for index,val in enumerate(runways):
+        pyplot.plot([clearing_times[val].X,clearing_times[val].X+20*60],[index]*2,label="Clearing" if index == 0 else "",color="orange")
+    pyplot.yticks(range(len(runways)),runways)
+    pyplot.legend()
     if not returns:
-        counter = 0
-        for i in runway_flights.keys():
-            pyplot.scatter(runway_flights[i]["Takeoff"],[counter]*len(runway_flights[i]["Takeoff"]),label="Takeoff")
-            pyplot.scatter(runway_flights[i]["Landing"],[counter]*len(runway_flights[i]["Landing"]),label="Landing")
-            pyplot.plot([clearing_times[i].X,clearing_times[i].X+20*60],[counter]*2,label="Clearing")
-            counter +=1
-
-        pyplot.legend()
-        pyplot.show()
-
-        counter = 0
-        for i in delays.keys():
-            pyplot.plot(range(int(delays[i][0]),int(delays[i][1])),range(0,int(delays[i][1]-delays[i][0])),label=i)
-
-        pyplot.legend()
         pyplot.show()
     else:
-        counter = 0
-        for i in runway_flights.keys():
-            pyplot.scatter(runway_flights[i]["Takeoff"],[counter]*len(runway_flights[i]["Takeoff"]),label="Takeoff")
-            pyplot.scatter(runway_flights[i]["Landing"],[counter]*len(runway_flights[i]["Landing"]),label="Landing")
-            pyplot.plot([clearing_times[i].X,clearing_times[i].X+20*60],[counter]*2,label="Clearing")
-            counter +=1
-
-        pyplot.legend()
-        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-times")
+        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-{snow_cond}-times")
         pyplot.close()
-        counter = 0
-        for i in delays.keys():
-            pyplot.plot(range(int(delays[i][0]),int(delays[i][1])),range(0,int(delays[i][1]-delays[i][0])),label=i)
-
-        pyplot.legend()
-        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-delays")
+    carry = []
+    for i in delays.keys():
+        carry+=range(int(delays[i][0]),int(delays[i][1]))
+        pyplot.bar(i,delays[i][1]-delays[i][0],label=i)
+    pyplot.xticks(range(0,len(aircraft)))
+    if not returns:
+        pyplot.show()
+    else:
+        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-{snow_cond}-delays")
+        pyplot.close()
+    c = Counter(carry)
+    for i in c.keys():
+        pyplot.bar(i,c[i],color="blue")
+    if not returns:
+        pyplot.show()
+    else:
+        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-{snow_cond}-waiting")
         pyplot.close()
         return total_delay,model.ObjVal
 
 def sensitivity_analysis():
     results_runways = []
+    snow_cond = [[1500,1500,1500,1500,1500],[1500,2400,3600,2400,1500],[0,1500,600,1500,0]]
     for i in [2,3,4,5]:
-        for j in range(1,i+1):
-            print(f"{i} runways, {j} plows")
-            results_runways.append((i,j,run_model(Mode.large_scale,True,num_runways=i,num_plows=j)))
+        for j in range(1,i):
+            for k in range(0,3):
+                print(f"{i} runways, {j} plows, snow condition {k}")
+                results_runways.append((i,j,k,run_model(Mode.large_scale,True,num_runways=i,num_plows=j,runway_unsafe_times=snow_cond[k],snow_cond=k)))
     for i in results_runways:
-        print(f"With {i[0]} runways and {i[1]} plows: total non-weighted delay: {i[2][0]}, total weighted delay: {i[2][1]}")
+        print(f"With {i[0]} runways and {i[1]} plows in snow condition {i[2]}: total non-weighted delay: {i[3][0]}, total weighted delay: {i[3][1]}")
     
 
 if __name__ == "__main__":
     sensitivity_analysis()
-    # run_model(Mode.large_scale,False,num_plows=3,num_runways=5)
+    # run_model(Mode.large_scale,False,num_plows=1,num_runways=2)
