@@ -69,14 +69,16 @@ def load_aircraft(filename:str)->list[Aircraft]:
         for row in reader:
             carry.append(Aircraft(int(row[0])*60,map_type(row[1]),map_direction(row[2])))
     return carry
+
+
 #Inputs - Large Scale:
-if False:
+if True:
     planning_horizon = 140*60
     runway_unsafe_times = [1200,1500]
     aircraft = load_aircraft("schipol1d.csv")
 
 #Inputs - Delayed arrival:
-if True:
+if False:
     planning_horizon = 60*60
     runway_unsafe_times = [1200,1500]
     aircraft = load_aircraft("test_file_delay.csv")
@@ -161,6 +163,11 @@ for i in list(range(len(aircraft))) + runways:
     for j in list(range(len(aircraft))) + runways:
         if i != j:
             i_before_j[i,j] = model.addVar(vtype=GRB.BINARY,name="delta_"+str(i)+"_"+str(j)) 
+            if isinstance(i,int) and isinstance(j,int):
+                if aircraft[i].direction == "Landing" and aircraft[j].target_time > 20*60+aircraft[i].target_time:
+                    i_before_j[i,j].start = 1
+                elif aircraft[i].direction == aircraft[j].direction and aircraft[i].target_time < aircraft[j].target_time:
+                    i_before_j[i,j].start = 1
 
 yar = {}
 for i in aircraft:
