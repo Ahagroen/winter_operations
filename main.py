@@ -119,7 +119,7 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
         case Mode.large_scale:
             #Inputs - Large Scale:
             planning_horizon = 140*60
-            runway_unsafe_times = [1200,1500,1500]
+            runway_unsafe_times = [1500,1500,1500]
             aircraft = load_aircraft("schipol1d.csv")
         case Mode.delayed_arrival:
             #Inputs - Delayed arrival:
