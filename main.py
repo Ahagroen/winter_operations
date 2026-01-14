@@ -117,7 +117,7 @@ class Mode(Enum):
 
 def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,num_plows:int=2,runway_unsafe_times:list[int]=[1500,1500,1500,1500,1500],snow_cond:int=0):
     model = Model("runway_winter")
-    model.setParam('TimeLimit', 3*60)
+    model.setParam('TimeLimit', 5*60)
     model.setParam("OutputFlag",0)
 
 
@@ -308,7 +308,6 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
             if not returns:
                 print(f"Flight: {aircraft[i].identifier} occurs at {event_times[i].X} on runway {match_runway(aircraft[i])}")
     print(f"Total (non cost adjusted) delay: {total_delay}, Cost adjusted delay: {model.ObjVal}")
-
     for i in runway_flights.keys():
         if len(runway_flights[i]) == 0:
             continue
@@ -316,30 +315,43 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
         pyplot.scatter(x,y,label=i)
     for index,val in enumerate(runways):
         pyplot.plot([clearing_times[val].X,clearing_times[val].X+20*60],[index]*2,label="Clearing" if index == 0 else "",color="orange")
+    pyplot.xlabel("Time")
+    pyplot.ylabel("Runway")
+    pyplot.title("Event Times on each runway")
     pyplot.yticks(range(len(runways)),runways)
     pyplot.legend()
     if not returns:
         pyplot.show()
     else:
-        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-{snow_cond}-times")
+        pyplot.gcf().set_size_inches(16,4)
+        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-{snow_cond}-times",dpi=100,bbox_inches='tight')
         pyplot.close()
     carry = []
     for i in delays.keys():
         carry+=range(int(delays[i][0]),int(delays[i][1]))
-        pyplot.bar(i,delays[i][1]-delays[i][0],label=i)
+        if delays[i][1]-delays[i][0] > 0:
+            pyplot.bar(i,delays[i][1]-delays[i][0],label=i)
     pyplot.xticks(range(0,len(aircraft)))
+    pyplot.xlabel("Aircraft Number")
+    pyplot.ylabel("Delay (s)")
+    pyplot.title("Flight Delay in Seconds")
     if not returns:
         pyplot.show()
     else:
-        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-{snow_cond}-delays")
+        pyplot.gcf().set_size_inches(24,6)
+        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-{snow_cond}-delays",dpi=100,bbox_inches='tight')
         pyplot.close()
     c = Counter(carry)
     for i in c.keys():
         pyplot.bar(i,c[i],color="blue")
+    pyplot.xlabel("Time (s)")
+    pyplot.ylabel("Aircraft Waiting")
+    pyplot.title("Total Aircraft Waiting")
     if not returns:
         pyplot.show()
     else:
-        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-{snow_cond}-waiting")
+        pyplot.gcf().set_size_inches(12,8)
+        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-{snow_cond}-waiting",dpi=100,bbox_inches='tight')
         pyplot.close()
         return total_delay,model.ObjVal
 
@@ -357,4 +369,4 @@ def sensitivity_analysis():
 
 if __name__ == "__main__":
     sensitivity_analysis()
-    # run_model(Mode.large_scale,False,num_plows=1,num_runways=2)
+    # run_model(Mode.large_scale,True,num_plows=1,num_runways=2)
