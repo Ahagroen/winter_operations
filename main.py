@@ -110,7 +110,7 @@ class Mode(Enum):
     feasible_takeoff_delay = 3
     delayed_after_plow = 4
 
-def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,num_plows:int=2):
+def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,num_plows:int=2,runway_unsafe_times:list[int]=[1500,1500,1500]):
     model = Model("runway_winter")
     model.setParam('TimeLimit', 5*60)
 
@@ -119,27 +119,34 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
         case Mode.large_scale:
             #Inputs - Large Scale:
             planning_horizon = 140*60
-            runway_unsafe_times = [1500,1500,1500]
             aircraft = load_aircraft("schipol1d.csv")
         case Mode.delayed_arrival:
             #Inputs - Delayed arrival:
             planning_horizon = 60*60
-            runway_unsafe_times = [1200,1500,1500]
+            runway_unsafe_times = [1200,1500]
+            num_plows = 1
+            num_runways = 2
             aircraft = load_aircraft("test_file_delay.csv")
         case Mode.infeasible_landing_delay:
             #Inputs - Infeasible (too long landing delay):
             planning_horizon = 60*60
-            runway_unsafe_times = [120,120,120]
+            runway_unsafe_times = [120,120]
+            num_plows = 1
+            num_runways = 2
             aircraft = load_aircraft("test_file_infeasible.csv")
         case Mode.feasible_takeoff_delay:
             #Inputs - Feasible (Same as above but takeoff so unlimited delay):
             planning_horizon = 60*60
-            runway_unsafe_times = [120,120,120]
+            runway_unsafe_times = [120,120]
+            num_plows = 1
+            num_runways = 2
             aircraft = load_aircraft("test_file_feasible.csv")
         case Mode.delayed_after_plow:
             #Inputs - Delayed until after plowing:
             planning_horizon = 60*60
-            runway_unsafe_times = [120,120,120]
+            runway_unsafe_times = [120,120]
+            num_plows = 1
+            num_runways = 2
             aircraft = load_aircraft("test_file_plow.csv")
         case _:
             raise RuntimeError("Not Implemented")
