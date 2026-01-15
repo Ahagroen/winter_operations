@@ -6,5 +6,6 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "gurobipy>=13.0.0",
+    "loguru>=0.7.3",
     "matplotlib>=3.10.8",
 ]

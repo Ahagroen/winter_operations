@@ -3,9 +3,12 @@ from dataclasses import dataclass, field
 from enum import Enum
 from functools import cache
 from itertools import count
+from logging import DEBUG, INFO
+from sys import stdout
 from typing import Literal
 from gurobipy import GRB, LinExpr, Model, quicksum
 import csv
+from loguru import logger
 
 from matplotlib import pyplot
 
@@ -115,7 +118,7 @@ class Mode(Enum):
     delayed_after_plow = 4
     infeasible_one_plow = 5
 
-def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,num_plows:int=2,runway_unsafe_times:list[int]=[1500,1500,1500,1500,1500],snow_cond:int=0):
+def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,num_plows:int=2,sep_fuzz_factor:float=0,runway_unsafe_times:list[int]=[1500,1500,1500,1500,1500],file_name:str=""):
     model = Model("runway_winter")
     model.setParam('TimeLimit', 5*60)
     model.setParam("OutputFlag",0)
@@ -255,7 +258,7 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
     for i in aircraft:
         for j in aircraft:
             if i != j:
-                model.addConstr(event_times[aircraft.index(j)] >= event_times[aircraft.index(i)] + seperation_time(i,j)*zij[aircraft.index(i),aircraft.index(j)] - 100000*i_before_j[aircraft.index(j),aircraft.index(i)])
+                model.addConstr(event_times[aircraft.index(j)] >= event_times[aircraft.index(i)] + (1+sep_fuzz_factor)*seperation_time(i,j)*zij[aircraft.index(i),aircraft.index(j)] - 100000*i_before_j[aircraft.index(j),aircraft.index(i)])
 
     for i in runways:
         model.addConstr(quicksum(rho[i,j] for j in range(snow_removal_groups)) == 1)
@@ -302,19 +305,17 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
         if event_times[i].X > aircraft[i].target_time:
             total_delay += event_times[i].X - aircraft[i].target_time
             delays[aircraft[i].identifier] = (aircraft[i].target_time,event_times[i].X)
-            if not returns:
-                print(f"Flight: {aircraft[i].identifier} occurs at {event_times[i].X} on runway {match_runway(aircraft[i])} - Delay of {event_times[i].X - aircraft[i].target_time}")
+            logger.debug(f"Flight: {aircraft[i].identifier} occurs at {event_times[i].X} on runway {match_runway(aircraft[i])} - Delay of {event_times[i].X - aircraft[i].target_time}")
         else:
-            if not returns:
-                print(f"Flight: {aircraft[i].identifier} occurs at {event_times[i].X} on runway {match_runway(aircraft[i])}")
-    print(f"Total (non cost adjusted) delay: {total_delay}, Cost adjusted delay: {model.ObjVal}")
+            logger.debug(f"Flight: {aircraft[i].identifier} occurs at {event_times[i].X} on runway {match_runway(aircraft[i])}")
+    logger.debug(f"Total (non cost adjusted) delay: {total_delay}, Cost adjusted delay: {model.ObjVal}")
     for i in runway_flights.keys():
         if len(runway_flights[i]) == 0:
             continue
         x,y = zip(*runway_flights[i])
         pyplot.scatter(x,y,label=i)
     for index,val in enumerate(runways):
-        pyplot.plot([clearing_times[val].X,clearing_times[val].X+20*60],[index]*2,label="Clearing" if index == 0 else "",color="orange")
+        pyplot.plot([clearing_times[val].X,clearing_times[val].X+plowing_time],[index]*2,label="Clearing" if index == 0 else "",color="orange")
     pyplot.xlabel("Time")
     pyplot.ylabel("Runway")
     pyplot.title("Event Times on each runway")
@@ -324,7 +325,7 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
         pyplot.show()
     else:
         pyplot.gcf().set_size_inches(16,4)
-        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-{snow_cond}-times",dpi=100,bbox_inches='tight')
+        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-{file_name}-times.png",dpi=100,bbox_inches='tight')
         pyplot.close()
     carry = []
     for i in delays.keys():
@@ -339,7 +340,7 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
         pyplot.show()
     else:
         pyplot.gcf().set_size_inches(24,6)
-        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-{snow_cond}-delays",dpi=100,bbox_inches='tight')
+        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-{file_name}-delays.png",dpi=100,bbox_inches='tight')
         pyplot.close()
     c = Counter(carry)
     for i in c.keys():
@@ -351,22 +352,54 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
         pyplot.show()
     else:
         pyplot.gcf().set_size_inches(12,8)
-        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-{snow_cond}-waiting",dpi=100,bbox_inches='tight')
+        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-{file_name}-waiting.png",dpi=100,bbox_inches='tight')
         pyplot.close()
         return total_delay,model.ObjVal
 
-def sensitivity_analysis():
+def discrete_sensitivity_analysis():
     results_runways = []
     snow_cond = [[1500,1500,1500,1500,1500],[1500,2400,3600,2400,1500],[0,1500,600,1500,0]]
-    for i in [2,3,4,5]:
+    for i in [2,3,4,5]: #[2,3,4,5]
         for j in range(1,i):
             for k in range(0,3):
-                print(f"{i} runways, {j} plows, snow condition {k}")
-                results_runways.append((i,j,k,run_model(Mode.large_scale,True,num_runways=i,num_plows=j,runway_unsafe_times=snow_cond[k],snow_cond=k)))
+                logger.info(f"snow type run - {i} runways, {j} plows, snow condition {k}")
+                results_runways.append((i,j,k,run_model(Mode.large_scale,True,num_runways=i,num_plows=j,runway_unsafe_times=snow_cond[k],file_name="snow-"+str(k))))
     for i in results_runways:
-        print(f"With {i[0]} runways and {i[1]} plows in snow condition {i[2]}: total non-weighted delay: {i[3][0]}, total weighted delay: {i[3][1]}")
+        logger.info(f"With {i[0]} runways and {i[1]} plows in snow condition {i[2]}: total non-weighted delay: {i[3][0]}, total weighted delay: {i[3][1]}")
     
 
+def plow_time_sensitivity_analysis():
+    carry = []
+    for i in range(10,32,2):
+        logger.info(f"plow time run - {i} minutes")
+        carry.append((i,run_model(Mode.large_scale,True,num_runways=4,num_plows=3,plowing_time=i*60,file_name="plow-time"+str(i))))
+    for i in carry:
+        logger.info(f"With plow-time {i[0]}, total non-weighted delay: {i[1][0]}, total weighted delay: {i[1][1]}")
+    pyplot.plot(range(10,32,2),[x[1][1] for x in carry])
+    pyplot.xlabel("Time to Plow a runway (minutes)")
+    pyplot.ylabel("Total Weighted Delay (s)")
+    pyplot.title("Sensitivity of Runway Plow time on Delay")
+    pyplot.show()
+
+
+def landing_space_sensitivity_analysis():
+    carry = []
+    for i in range(0,12,2):
+        logger.info(f"plow time run - {i} percent extra")
+        carry.append((i/10,run_model(Mode.large_scale,True,num_runways=4,num_plows=3,sep_fuzz_factor=i/10,file_name="sep-time"+str(100+i))))
+    for i in carry:
+        logger.info(f"With sep-time margin {i[0]}, total non-weighted delay: {i[1][0]}, total weighted delay: {i[1][1]}")
+    pyplot.plot([x for x in list(range(100,220,20))],[x[1][1] for x in carry])
+    pyplot.xlabel("Percentage of Clear Weather seperation time")
+    pyplot.ylabel("Total Weighted Delay (s)")
+    pyplot.title("Sensitivity of Sa on Delay")
+    pyplot.show()
+
 if __name__ == "__main__":
-    sensitivity_analysis()
+    logger.remove()
+    logger.add(stdout,level=INFO)
+    logger.add("runlog.log",level=DEBUG)
+    landing_space_sensitivity_analysis()
+    # plow_time_sensitivity_analysis()
+    # discrete_sensitivity_analysis()
     # run_model(Mode.large_scale,True,num_plows=1,num_runways=2)
