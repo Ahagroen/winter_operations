@@ -5574,3 +5574,103 @@
 2026-01-15 21:28:39.789 | INFO     | __main__:landing_space_sensitivity_analysis:391 - With sep-time margin 0.6, total non-weighted delay: 4893.0, total weighted delay: 5277.0
 2026-01-15 21:28:39.790 | INFO     | __main__:landing_space_sensitivity_analysis:391 - With sep-time margin 0.8, total non-weighted delay: 4758.0, total weighted delay: 6036.0
 2026-01-15 21:28:39.816 | INFO     | __main__:landing_space_sensitivity_analysis:391 - With sep-time margin 1.0, total non-weighted delay: 6222.0, total weighted delay: 7398.0
+2026-01-15 21:30:49.609 | INFO     | __main__:landing_space_sensitivity_analysis:388 - plow time run - 0 percent extra
+2026-01-15 21:36:03.402 | DEBUG    | __main__:run_model:310 - Flight: 0 occurs at 0.0 on runway C
+2026-01-15 21:36:03.402 | DEBUG    | __main__:run_model:310 - Flight: 1 occurs at -0.0 on runway D
+2026-01-15 21:36:03.402 | DEBUG    | __main__:run_model:310 - Flight: 2 occurs at 600.0 on runway B
+2026-01-15 21:36:03.402 | DEBUG    | __main__:run_model:310 - Flight: 3 occurs at 1800.0 on runway C
+2026-01-15 21:36:03.402 | DEBUG    | __main__:run_model:310 - Flight: 4 occurs at 2400.0 on runway A
+2026-01-15 21:36:03.403 | DEBUG    | __main__:run_model:310 - Flight: 5 occurs at 2700.0 on runway A
+2026-01-15 21:36:03.403 | DEBUG    | __main__:run_model:310 - Flight: 6 occurs at 3000.0 on runway C
+2026-01-15 21:36:03.403 | DEBUG    | __main__:run_model:310 - Flight: 7 occurs at 3000.0 on runway D
+2026-01-15 21:36:03.403 | DEBUG    | __main__:run_model:310 - Flight: 8 occurs at 3000.0 on runway A
+2026-01-15 21:36:03.403 | DEBUG    | __main__:run_model:310 - Flight: 9 occurs at 3300.0 on runway B
+2026-01-15 21:36:03.403 | DEBUG    | __main__:run_model:310 - Flight: 10 occurs at 3900.0 on runway C
+2026-01-15 21:36:03.403 | DEBUG    | __main__:run_model:310 - Flight: 11 occurs at 4200.0 on runway B
+2026-01-15 21:36:03.403 | DEBUG    | __main__:run_model:308 - Flight: 12 occurs at 4329.0 on runway C - Delay of 129.0
+2026-01-15 21:36:03.403 | DEBUG    | __main__:run_model:308 - Flight: 13 occurs at 4329.0 on runway A - Delay of 129.0
+2026-01-15 21:36:03.404 | DEBUG    | __main__:run_model:308 - Flight: 14 occurs at 4260.0 on runway C - Delay of 60.0
+2026-01-15 21:36:03.404 | DEBUG    | __main__:run_model:308 - Flight: 15 occurs at 4329.0 on runway D - Delay of 129.0
+2026-01-15 21:36:03.404 | DEBUG    | __main__:run_model:308 - Flight: 16 occurs at 4357.0 on runway B - Delay of 157.0
+2026-01-15 21:36:03.404 | DEBUG    | __main__:run_model:308 - Flight: 17 occurs at 4260.0 on runway A - Delay of 60.0
+2026-01-15 21:36:03.404 | DEBUG    | __main__:run_model:310 - Flight: 18 occurs at 4500.0 on runway C
+2026-01-15 21:36:03.404 | DEBUG    | __main__:run_model:310 - Flight: 19 occurs at 4500.0 on runway A
+2026-01-15 21:36:03.405 | DEBUG    | __main__:run_model:310 - Flight: 20 occurs at 4500.0 on runway B
+2026-01-15 21:36:03.405 | DEBUG    | __main__:run_model:310 - Flight: 21 occurs at 4800.0 on runway B
+2026-01-15 21:36:03.407 | DEBUG    | __main__:run_model:308 - Flight: 22 occurs at 4860.0 on runway D - Delay of 60.0
+2026-01-15 21:36:03.408 | DEBUG    | __main__:run_model:310 - Flight: 23 occurs at 5100.0 on runway D
+2026-01-15 21:36:03.409 | DEBUG    | __main__:run_model:310 - Flight: 24 occurs at 5100.0 on runway C
+2026-01-15 21:36:03.409 | DEBUG    | __main__:run_model:310 - Flight: 25 occurs at 5100.0 on runway B
+2026-01-15 21:36:03.409 | DEBUG    | __main__:run_model:310 - Flight: 26 occurs at 5400.0 on runway C
+2026-01-15 21:36:03.409 | DEBUG    | __main__:run_model:310 - Flight: 27 occurs at 5700.0 on runway D
+2026-01-15 21:36:03.409 | DEBUG    | __main__:run_model:310 - Flight: 28 occurs at 5700.0 on runway B
+2026-01-15 21:36:03.418 | DEBUG    | __main__:run_model:308 - Flight: 29 occurs at 5760.0 on runway A - Delay of 60.0
+2026-01-15 21:36:03.418 | DEBUG    | __main__:run_model:308 - Flight: 30 occurs at 5769.0 on runway C - Delay of 69.0
+2026-01-15 21:36:03.418 | DEBUG    | __main__:run_model:310 - Flight: 31 occurs at 5700.0 on runway C
+2026-01-15 21:36:03.418 | DEBUG    | __main__:run_model:310 - Flight: 32 occurs at 6000.0 on runway A
+2026-01-15 21:36:03.419 | DEBUG    | __main__:run_model:310 - Flight: 33 occurs at 6000.0 on runway D
+2026-01-15 21:36:03.419 | DEBUG    | __main__:run_model:310 - Flight: 34 occurs at 6000.0 on runway B
+2026-01-15 21:36:03.419 | DEBUG    | __main__:run_model:308 - Flight: 35 occurs at 6069.0 on runway B - Delay of 69.0
+2026-01-15 21:36:03.419 | DEBUG    | __main__:run_model:310 - Flight: 36 occurs at 6300.0 on runway C
+2026-01-15 21:36:03.419 | DEBUG    | __main__:run_model:310 - Flight: 37 occurs at 6600.0 on runway D
+2026-01-15 21:36:03.419 | DEBUG    | __main__:run_model:310 - Flight: 38 occurs at 6600.0 on runway C
+2026-01-15 21:36:03.419 | DEBUG    | __main__:run_model:310 - Flight: 39 occurs at 6600.0 on runway B
+2026-01-15 21:36:03.419 | DEBUG    | __main__:run_model:310 - Flight: 40 occurs at 6900.0 on runway B
+2026-01-15 21:36:03.419 | DEBUG    | __main__:run_model:310 - Flight: 41 occurs at 7200.0 on runway D
+2026-01-15 21:36:03.434 | DEBUG    | __main__:run_model:310 - Flight: 42 occurs at 7200.0 on runway C
+2026-01-15 21:36:03.434 | DEBUG    | __main__:run_model:310 - Flight: 43 occurs at 7200.0 on runway A
+2026-01-15 21:36:03.435 | DEBUG    | __main__:run_model:310 - Flight: 44 occurs at -0.0 on runway B
+2026-01-15 21:36:03.435 | DEBUG    | __main__:run_model:310 - Flight: 45 occurs at -0.0 on runway A
+2026-01-15 21:36:03.435 | DEBUG    | __main__:run_model:310 - Flight: 46 occurs at 1200.0 on runway B
+2026-01-15 21:36:03.435 | DEBUG    | __main__:run_model:310 - Flight: 47 occurs at 1200.0 on runway D
+2026-01-15 21:36:03.435 | DEBUG    | __main__:run_model:310 - Flight: 48 occurs at 1800.0 on runway A
+2026-01-15 21:36:03.435 | DEBUG    | __main__:run_model:310 - Flight: 49 occurs at 2100.0 on runway C
+2026-01-15 21:36:03.435 | DEBUG    | __main__:run_model:310 - Flight: 50 occurs at 2400.0 on runway C
+2026-01-15 21:36:03.436 | DEBUG    | __main__:run_model:308 - Flight: 51 occurs at 2460.0 on runway C - Delay of 60.0
+2026-01-15 21:36:03.436 | DEBUG    | __main__:run_model:310 - Flight: 52 occurs at 2700.0 on runway C
+2026-01-15 21:36:03.436 | DEBUG    | __main__:run_model:308 - Flight: 53 occurs at 3075.0 on runway C - Delay of 75.0
+2026-01-15 21:36:03.436 | DEBUG    | __main__:run_model:310 - Flight: 54 occurs at 3300.0 on runway D
+2026-01-15 21:36:03.436 | DEBUG    | __main__:run_model:308 - Flight: 55 occurs at 3420.0 on runway C - Delay of 120.0
+2026-01-15 21:36:03.436 | DEBUG    | __main__:run_model:308 - Flight: 56 occurs at 3360.0 on runway C - Delay of 60.0
+2026-01-15 21:36:03.451 | DEBUG    | __main__:run_model:310 - Flight: 57 occurs at 3300.0 on runway A
+2026-01-15 21:36:03.451 | DEBUG    | __main__:run_model:308 - Flight: 58 occurs at 3375.0 on runway B - Delay of 75.0
+2026-01-15 21:36:03.451 | DEBUG    | __main__:run_model:308 - Flight: 59 occurs at 3360.0 on runway A - Delay of 60.0
+2026-01-15 21:36:03.451 | DEBUG    | __main__:run_model:308 - Flight: 60 occurs at 3420.0 on runway A - Delay of 120.0
+2026-01-15 21:36:03.451 | DEBUG    | __main__:run_model:308 - Flight: 61 occurs at 3360.0 on runway D - Delay of 60.0
+2026-01-15 21:36:03.452 | DEBUG    | __main__:run_model:310 - Flight: 62 occurs at 3300.0 on runway C
+2026-01-15 21:36:03.452 | DEBUG    | __main__:run_model:308 - Flight: 63 occurs at 3660.0 on runway B - Delay of 60.0
+2026-01-15 21:36:03.452 | DEBUG    | __main__:run_model:308 - Flight: 64 occurs at 3660.0 on runway C - Delay of 60.0
+2026-01-15 21:36:03.452 | DEBUG    | __main__:run_model:308 - Flight: 65 occurs at 3720.0 on runway C - Delay of 120.0
+2026-01-15 21:36:03.452 | DEBUG    | __main__:run_model:310 - Flight: 66 occurs at 3600.0 on runway C
+2026-01-15 21:36:03.452 | DEBUG    | __main__:run_model:310 - Flight: 67 occurs at 3600.0 on runway D
+2026-01-15 21:36:03.452 | DEBUG    | __main__:run_model:310 - Flight: 68 occurs at 3600.0 on runway A
+2026-01-15 21:36:03.452 | DEBUG    | __main__:run_model:310 - Flight: 69 occurs at 3600.0 on runway B
+2026-01-15 21:36:03.453 | DEBUG    | __main__:run_model:308 - Flight: 70 occurs at 3660.0 on runway D - Delay of 60.0
+2026-01-15 21:36:03.453 | DEBUG    | __main__:run_model:310 - Flight: 71 occurs at 4200.0 on runway A
+2026-01-15 21:36:03.453 | DEBUG    | __main__:run_model:310 - Flight: 72 occurs at 4200.0 on runway D
+2026-01-15 21:36:03.453 | DEBUG    | __main__:run_model:308 - Flight: 73 occurs at 4260.0 on runway D - Delay of 60.0
+2026-01-15 21:36:03.453 | DEBUG    | __main__:run_model:310 - Flight: 74 occurs at 4200.0 on runway C
+2026-01-15 21:36:03.453 | DEBUG    | __main__:run_model:308 - Flight: 75 occurs at 4275.0 on runway B - Delay of 75.0
+2026-01-15 21:36:03.453 | DEBUG    | __main__:run_model:308 - Flight: 76 occurs at 4560.0 on runway D - Delay of 60.0
+2026-01-15 21:36:03.454 | DEBUG    | __main__:run_model:308 - Flight: 77 occurs at 4575.0 on runway A - Delay of 75.0
+2026-01-15 21:36:03.454 | DEBUG    | __main__:run_model:310 - Flight: 78 occurs at 4500.0 on runway D
+2026-01-15 21:36:03.454 | DEBUG    | __main__:run_model:310 - Flight: 79 occurs at 4800.0 on runway D
+2026-01-15 21:36:03.454 | DEBUG    | __main__:run_model:308 - Flight: 80 occurs at 4860.0 on runway C - Delay of 60.0
+2026-01-15 21:36:03.454 | DEBUG    | __main__:run_model:310 - Flight: 81 occurs at 4800.0 on runway A
+2026-01-15 21:36:03.454 | DEBUG    | __main__:run_model:308 - Flight: 82 occurs at 4860.0 on runway A - Delay of 60.0
+2026-01-15 21:36:03.454 | DEBUG    | __main__:run_model:310 - Flight: 83 occurs at 4800.0 on runway C
+2026-01-15 21:36:03.454 | DEBUG    | __main__:run_model:308 - Flight: 84 occurs at 5160.0 on runway A - Delay of 60.0
+2026-01-15 21:36:03.455 | DEBUG    | __main__:run_model:310 - Flight: 85 occurs at 5100.0 on runway A
+2026-01-15 21:36:03.458 | DEBUG    | __main__:run_model:310 - Flight: 86 occurs at 5400.0 on runway B
+2026-01-15 21:36:03.459 | DEBUG    | __main__:run_model:310 - Flight: 87 occurs at 5700.0 on runway A
+2026-01-15 21:36:03.459 | DEBUG    | __main__:run_model:310 - Flight: 88 occurs at 6000.0 on runway C
+2026-01-15 21:36:03.460 | DEBUG    | __main__:run_model:308 - Flight: 89 occurs at 6075.0 on runway A - Delay of 75.0
+2026-01-15 21:36:03.460 | DEBUG    | __main__:run_model:308 - Flight: 90 occurs at 6060.0 on runway C - Delay of 60.0
+2026-01-15 21:36:03.460 | DEBUG    | __main__:run_model:310 - Flight: 91 occurs at 6300.0 on runway A
+2026-01-15 21:36:03.460 | DEBUG    | __main__:run_model:310 - Flight: 92 occurs at 6300.0 on runway B
+2026-01-15 21:36:03.460 | DEBUG    | __main__:run_model:310 - Flight: 93 occurs at 6900.0 on runway C
+2026-01-15 21:36:03.460 | DEBUG    | __main__:run_model:310 - Flight: 94 occurs at 7200.0 on runway B
+2026-01-15 21:36:03.460 | DEBUG    | __main__:run_model:308 - Flight: 95 occurs at 7275.0 on runway D - Delay of 75.0
+2026-01-15 21:36:03.460 | DEBUG    | __main__:run_model:308 - Flight: 96 occurs at 7260.0 on runway B - Delay of 60.0
+2026-01-15 21:36:03.461 | DEBUG    | __main__:run_model:311 - Total (non cost adjusted) delay: 2572.0, Cost adjusted delay: 2572.0
+2026-01-15 21:36:11.637 | INFO     | __main__:landing_space_sensitivity_analysis:388 - plow time run - 2 percent extra
