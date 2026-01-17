@@ -9,6 +9,7 @@ from typing import Literal
 from gurobipy import GRB, LinExpr, Model, quicksum
 import csv
 from loguru import logger
+import time
 
 from matplotlib import pyplot
 
@@ -74,7 +75,7 @@ def load_aircraft(filename:str)->list[Aircraft]:
     with open(filename,"r") as fs:
         reader = csv.reader(fs)
         for row in reader:
-            carry.append(Aircraft(int(row[0])*60,map_type(row[1]),map_direction(row[2])))
+            carry.append(Aircraft(int(row[0]),map_type(row[1]),map_direction(row[2])))
     return carry
 
 
@@ -117,17 +118,36 @@ class Mode(Enum):
     feasible_takeoff_delay = 3
     delayed_after_plow = 4
     too_short_one_plow = 5
+    validation = 6
+
+
+def callback(model, where):
+    if where == GRB.Callback.MIPNODE:
+        # Get model objective
+        obj = model.cbGet(GRB.Callback.MIPNODE_OBJBST)
+
+        # Has objective changed?
+        if abs(obj - model._cur_obj) > 1e-8:
+            # If so, update incumbent and time
+            model._cur_obj = obj
+            model._time = time.time()
+
+    # Terminate if objective has not improved in 20s
+    if time.time() - model._time > 30:
+        model.terminate()
+
+
 
 def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,num_plows:int=2,sep_fuzz_factor:float=0,runway_unsafe_times:list[int]=[1500,1500,1500,1500,1500],file_name:str=""):
     model = Model("runway_winter")
     model.setParam('TimeLimit', 5*60)
-    model.setParam("OutputFlag",0)
-
-
+    # model.setParam("OutputFlag",0)
+    
+    #set up early stopping
     match mode:
         case Mode.large_scale:
             #Inputs - Large Scale:
-            planning_horizon = 140*60
+            planning_horizon = 120*60
             aircraft = load_aircraft("schipol1d.csv")
         case Mode.delayed_arrival:
             #Inputs - Delayed arrival:
@@ -163,6 +183,13 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
             num_plows = 1
             num_runways = 2
             aircraft = load_aircraft("test_file_plow.csv")
+        case Mode.validation:
+            planning_horizon = 3600
+            num_plows = 1
+            num_runways = 2
+            runway_unsafe_times = [600,1500]
+            plowing_time = 1200
+            aircraft = load_aircraft("munichc9.csv")
         case _:
             raise RuntimeError("Not Implemented")
 
@@ -178,10 +205,7 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
     runways = runways[0:num_runways]
 
     def last_time(ac:Aircraft):
-        if ac.direction == "Takeoff":
-            return planning_horizon
-        else:
-            return ac.target_time+20*60
+        return ac.target_time+20*60
 
     #Decision Vars  
     event_times = {} #Xa
@@ -199,9 +223,9 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
                 i_before_j[i,j] = model.addVar(vtype=GRB.BINARY,name="delta_"+str(i)+"_"+str(j)) 
                 #Pre-solve, based on paper
                 if isinstance(i,int) and isinstance(j,int):
-                    if aircraft[i].direction == "Landing" and aircraft[j].target_time > 20*60+aircraft[i].target_time:
+                    if aircraft[j].target_time > 20*60+aircraft[i].target_time:
                         i_before_j[i,j].start = 1
-                    elif aircraft[i].direction == aircraft[j].direction and aircraft[i].target_time < aircraft[j].target_time:
+                    elif aircraft[i].target_time < aircraft[j].target_time and aircraft[i].ac_class == aircraft[j].ac_class:
                         i_before_j[i,j].start = 1
 
     yar = {}
@@ -289,8 +313,9 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
         for j in runways:
             model.addConstr(event_times[i] <= runway_unsafe_times[runways.index(j)] + 100000*(1-yar[i,j]) + 100000*i_before_j[j,i])
 
-
-    model.optimize()
+    model._cur_obj = float('inf')
+    model._time = time.time()
+    model.optimize(callback=callback)
 
     def match_runway(flight):
         return [x for x in runways if yar[flight.identifier,x].X == 1][0]
@@ -325,8 +350,8 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
     if not returns:
         pyplot.show()
     else:
-        pyplot.gcf().set_size_inches(8,4)
-        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-{file_name}-times.png",dpi=200,bbox_inches='tight')
+        pyplot.gcf().set_size_inches(16,4)
+        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-{file_name}-times.png",dpi=100,bbox_inches='tight')
         pyplot.close()
     carry = []
     for i in delays.keys():
@@ -397,7 +422,7 @@ def plow_time_sensitivity_analysis():
 def landing_space_sensitivity_analysis():
     carry = []
     for i in range(0,12,2):
-        logger.info(f"plow time run - {i} percent extra")
+        logger.info(f"sep time run - {i} percent extra")
         carry.append((i/10,run_model(Mode.large_scale,True,num_runways=4,num_plows=3,sep_fuzz_factor=i/10,file_name="sep-time"+str(100+i))))
     for i in carry:
         logger.info(f"With sep-time margin {i[0]}, total non-weighted delay: {i[1][0]}, total weighted delay: {i[1][1]}")
@@ -413,5 +438,5 @@ if __name__ == "__main__":
     logger.add("runlog.log",level=DEBUG)
     # landing_space_sensitivity_analysis()
     # plow_time_sensitivity_analysis()
-    # discrete_sensitivity_analysis()
-    run_model(Mode.too_short_one_plow,True,num_plows=1,num_runways=2)
+    discrete_sensitivity_analysis()
+    # run_model(Mode.large_scale,True,num_plows=1,runway_unsafe_times=[0,1500,600,1500,0],file_name="snow-0")
