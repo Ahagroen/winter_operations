@@ -115,7 +115,6 @@ class Mode(Enum):
     large_scale = 0
     delayed_arrival = 1
     infeasible_landing_delay = 2
-    feasible_takeoff_delay = 3
     delayed_after_plow = 4
     too_short_one_plow = 5
     validation = 6
@@ -138,7 +137,7 @@ def callback(model, where):
 
 
 
-def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,num_plows:int=2,sep_fuzz_factor:float=0,runway_unsafe_times:list[int]=[1500,1500,1500,1500,1500],file_name:str=""):
+def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,num_plows:int=2,event_margin:int=20*60,sep_fuzz_factor:float=0,runway_unsafe_times:list[int]=[1500,1500,1500,1500,1500],file_name:str=""):
     model = Model("runway_winter")
     model.setParam('TimeLimit', 5*60)
     # model.setParam("OutputFlag",0)
@@ -163,13 +162,6 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
             num_plows = 1
             num_runways = 2
             aircraft = load_aircraft("test_file_infeasible.csv")
-        case Mode.feasible_takeoff_delay:
-            #Inputs - Feasible (Same as above but takeoff so unlimited delay):
-            planning_horizon = 60*60
-            runway_unsafe_times = [120,120]
-            num_plows = 1
-            num_runways = 2
-            aircraft = load_aircraft("test_file_feasible.csv")
         case Mode.delayed_after_plow:
             #Inputs - Delayed until after plowing:
             planning_horizon = 60*60
@@ -205,7 +197,7 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
     runways = runways[0:num_runways]
 
     def last_time(ac:Aircraft):
-        return ac.target_time+20*60
+        return ac.target_time+event_margin
 
     #Decision Vars  
     event_times = {} #Xa
@@ -342,16 +334,16 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
     for index,val in enumerate(runways):
         if clearing_times[val].X < planning_horizon:
             pyplot.plot([clearing_times[val].X,clearing_times[val].X+plowing_time],[index]*2,label="Clearing" if index == 0 else "",color="orange")
-    pyplot.xlabel("Time")
-    pyplot.ylabel("Runway")
-    pyplot.title("Event Times on each runway")
+    pyplot.xlabel("Time",fontsize=14)
+    pyplot.ylabel("Runway",fontsize=14)
+    pyplot.title("Event Times on each runway",fontsize=20)
     pyplot.yticks(range(len(runways)),runways)
     pyplot.legend()
     if not returns:
         pyplot.show()
     else:
-        pyplot.gcf().set_size_inches(16,4)
-        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-{file_name}-times.png",dpi=100,bbox_inches='tight')
+        pyplot.gcf().set_size_inches(12,4)
+        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-{file_name}-times.svg",dpi=100,bbox_inches='tight')
         pyplot.close()
     carry = []
     for i in delays.keys():
@@ -359,26 +351,26 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
         if delays[i][1]-delays[i][0] > 0:
             pyplot.bar(i,delays[i][1]-delays[i][0],label=i)
     pyplot.xticks(range(0,len(aircraft)))
-    pyplot.xlabel("Aircraft Number")
-    pyplot.ylabel("Delay (s)")
-    pyplot.title("Flight Delay in Seconds")
+    pyplot.xlabel("Aircraft Number",fontsize=14)
+    pyplot.ylabel("Delay (s)",fontsize=14)
+    pyplot.title("Flight Delay in Seconds",fontsize=20)
     if not returns:
         pyplot.show()
     else:
-        pyplot.gcf().set_size_inches(24,6)
-        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-{file_name}-delays.png",dpi=100,bbox_inches='tight')
+        pyplot.gcf().set_size_inches(16,6)
+        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-{file_name}-delays.svg",dpi=100,bbox_inches='tight')
         pyplot.close()
     c = Counter(carry)
     for i in c.keys():
         pyplot.bar(i,c[i],color="blue")
-    pyplot.xlabel("Time (s)")
-    pyplot.ylabel("Aircraft Waiting")
-    pyplot.title("Total Aircraft Waiting")
+    pyplot.xlabel("Time (s)",fontsize=14)
+    pyplot.ylabel("Aircraft Waiting",fontsize=14)
+    pyplot.title("Total Aircraft Waiting",fontsize=20)
     if not returns:
         pyplot.show()
     else:
         pyplot.gcf().set_size_inches(12,8)
-        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-{file_name}-waiting.png",dpi=100,bbox_inches='tight')
+        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-{file_name}-waiting.svg",dpi=100,bbox_inches='tight')
         pyplot.close()
         return total_delay,model.ObjVal
 
@@ -432,11 +424,35 @@ def landing_space_sensitivity_analysis():
     pyplot.title("Sensitivity of Sab on Delay")
     pyplot.show()
 
+
+def landing_time_sensitivity_analysis():
+    carry = []
+    for i in range(10,30,2):
+        logger.info(f"event margin run - {i} minutes")
+        carry.append((i,run_model(Mode.large_scale,True,num_runways=4,num_plows=3,event_margin=i*60,file_name="event_margin"+str(i))))
+    for i in carry:
+        logger.info(f"With event margin {i[0]}, total non-weighted delay: {i[1][0]}, total weighted delay: {i[1][1]}")
+    pyplot.plot([x for x in list(range(100,220,20))],[x[1][1] for x in carry])
+    pyplot.xlabel("Allowable delay past scheduled (m)")
+    pyplot.ylabel("Total Weighted Delay (s)")
+    pyplot.title("Sensitivity of Allowable Delay on Delay")
+    pyplot.show()
+
+
 if __name__ == "__main__":
     logger.remove()
     logger.add(stdout,level=INFO)
     logger.add("runlog.log",level=DEBUG)
+
+    #Sensitivity Analysis
     # landing_space_sensitivity_analysis()
     # plow_time_sensitivity_analysis()
-    discrete_sensitivity_analysis()
+    # discrete_sensitivity_analysis()
+    # landing_space_sensitivity_analysis()
+
+    #Verification
+    # run_model(Mode.delayed_arrival,True,num_plows=1,num_runways=2,file_name="verification-delayed-arrival")
+    # run_model(Mode.delayed_after_plow,True,num_plows=1,num_runways=2,file_name="verification-delayed-afterplow")
+    # run_model(Mode.infeasible_landing_delay,True,num_plows=1,num_runways=2,file_name="verification-infeasible-delay")
+    # run_model(Mode.too_short_one_plow,True,num_plows=1,num_runways=2,file_name="verification-one-plow")
     # run_model(Mode.large_scale,True,num_plows=1,runway_unsafe_times=[0,1500,600,1500,0],file_name="snow-0")

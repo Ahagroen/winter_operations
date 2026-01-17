@@ -7471,3 +7471,172 @@
 2026-01-17 00:57:48.949 | INFO     | __main__:discrete_sensitivity_analysis:397 - With 5 runways and 4 plows in snow condition 0: total non-weighted delay: 1488.0, total weighted delay: 1488.0
 2026-01-17 00:57:48.950 | INFO     | __main__:discrete_sensitivity_analysis:398 - With 5 runways and 4 plows in snow condition 1: total non-weighted delay: 1497.0, total weighted delay: 1497.0
 2026-01-17 00:57:48.950 | INFO     | __main__:discrete_sensitivity_analysis:399 - With 5 runways and 4 plows in snow condition 2: total non-weighted delay: 1512.0, total weighted delay: 1512.0
+2026-01-17 11:02:45.076 | DEBUG    | __main__:run_model:326 - Flight: 0 occurs at 96.0 on runway A - Delay of 96.0
+2026-01-17 11:02:45.076 | DEBUG    | __main__:run_model:326 - Flight: 1 occurs at 96.0 on runway B - Delay of 96.0
+2026-01-17 11:02:45.077 | DEBUG    | __main__:run_model:328 - Flight: 2 occurs at 0.0 on runway B
+2026-01-17 11:02:45.077 | DEBUG    | __main__:run_model:328 - Flight: 3 occurs at 0.0 on runway A
+2026-01-17 11:02:45.077 | DEBUG    | __main__:run_model:329 - Total (non cost adjusted) delay: 192.0, Cost adjusted delay: 576.0
+2026-01-17 11:02:47.614 | DEBUG    | __main__:run_model:326 - Flight: 4 occurs at 96.0 on runway B - Delay of 96.0
+2026-01-17 11:02:47.614 | DEBUG    | __main__:run_model:326 - Flight: 5 occurs at 96.0 on runway B - Delay of 96.0
+2026-01-17 11:02:47.615 | DEBUG    | __main__:run_model:328 - Flight: 6 occurs at -0.0 on runway B
+2026-01-17 11:02:47.615 | DEBUG    | __main__:run_model:328 - Flight: 7 occurs at -0.0 on runway B
+2026-01-17 11:06:14.383 | DEBUG    | __main__:run_model:325 - Flight: 0 occurs at 96.0 on runway B - Delay of 96.0
+2026-01-17 11:06:14.384 | DEBUG    | __main__:run_model:325 - Flight: 1 occurs at 96.0 on runway A - Delay of 96.0
+2026-01-17 11:06:14.384 | DEBUG    | __main__:run_model:327 - Flight: 2 occurs at -0.0 on runway B
+2026-01-17 11:06:14.384 | DEBUG    | __main__:run_model:327 - Flight: 3 occurs at -0.0 on runway A
+2026-01-17 11:06:14.384 | DEBUG    | __main__:run_model:325 - Flight: 4 occurs at 1704.0 on runway B - Delay of 624.0
+2026-01-17 11:06:14.384 | DEBUG    | __main__:run_model:325 - Flight: 5 occurs at 1608.0 on runway B - Delay of 528.0
+2026-01-17 11:06:14.384 | DEBUG    | __main__:run_model:325 - Flight: 6 occurs at 1512.0 on runway B - Delay of 432.0
+2026-01-17 11:06:14.384 | DEBUG    | __main__:run_model:325 - Flight: 7 occurs at 1416.0 on runway B - Delay of 336.0
+2026-01-17 11:06:14.384 | DEBUG    | __main__:run_model:328 - Total (non cost adjusted) delay: 2112.0, Cost adjusted delay: 6336.0
+2026-01-17 11:07:14.317 | DEBUG    | __main__:run_model:325 - Flight: 0 occurs at 96.0 on runway B - Delay of 96.0
+2026-01-17 11:07:14.317 | DEBUG    | __main__:run_model:325 - Flight: 1 occurs at 96.0 on runway A - Delay of 96.0
+2026-01-17 11:07:14.318 | DEBUG    | __main__:run_model:327 - Flight: 2 occurs at -0.0 on runway B
+2026-01-17 11:07:14.318 | DEBUG    | __main__:run_model:327 - Flight: 3 occurs at -0.0 on runway A
+2026-01-17 11:07:14.318 | DEBUG    | __main__:run_model:325 - Flight: 4 occurs at 1704.0 on runway B - Delay of 624.0
+2026-01-17 11:07:14.318 | DEBUG    | __main__:run_model:325 - Flight: 5 occurs at 1608.0 on runway B - Delay of 528.0
+2026-01-17 11:07:14.318 | DEBUG    | __main__:run_model:325 - Flight: 6 occurs at 1512.0 on runway B - Delay of 432.0
+2026-01-17 11:07:14.318 | DEBUG    | __main__:run_model:325 - Flight: 7 occurs at 1416.0 on runway B - Delay of 336.0
+2026-01-17 11:07:14.318 | DEBUG    | __main__:run_model:328 - Total (non cost adjusted) delay: 2112.0, Cost adjusted delay: 6336.0
+2026-01-17 11:17:32.640 | DEBUG    | __main__:run_model:325 - Flight: 0 occurs at 96.0 on runway B - Delay of 96.0
+2026-01-17 11:17:32.640 | DEBUG    | __main__:run_model:325 - Flight: 1 occurs at 96.0 on runway A - Delay of 96.0
+2026-01-17 11:17:32.640 | DEBUG    | __main__:run_model:327 - Flight: 2 occurs at -0.0 on runway B
+2026-01-17 11:17:32.640 | DEBUG    | __main__:run_model:327 - Flight: 3 occurs at -0.0 on runway A
+2026-01-17 11:17:32.640 | DEBUG    | __main__:run_model:325 - Flight: 4 occurs at 1704.0 on runway B - Delay of 624.0
+2026-01-17 11:17:32.640 | DEBUG    | __main__:run_model:325 - Flight: 5 occurs at 1608.0 on runway B - Delay of 528.0
+2026-01-17 11:17:32.640 | DEBUG    | __main__:run_model:325 - Flight: 6 occurs at 1512.0 on runway B - Delay of 432.0
+2026-01-17 11:17:32.641 | DEBUG    | __main__:run_model:325 - Flight: 7 occurs at 1416.0 on runway B - Delay of 336.0
+2026-01-17 11:17:32.641 | DEBUG    | __main__:run_model:328 - Total (non cost adjusted) delay: 2112.0, Cost adjusted delay: 6336.0
+2026-01-17 11:18:11.858 | DEBUG    | __main__:run_model:325 - Flight: 0 occurs at 96.0 on runway B - Delay of 96.0
+2026-01-17 11:18:11.858 | DEBUG    | __main__:run_model:325 - Flight: 1 occurs at 96.0 on runway A - Delay of 96.0
+2026-01-17 11:18:11.858 | DEBUG    | __main__:run_model:327 - Flight: 2 occurs at -0.0 on runway B
+2026-01-17 11:18:11.858 | DEBUG    | __main__:run_model:327 - Flight: 3 occurs at -0.0 on runway A
+2026-01-17 11:18:11.858 | DEBUG    | __main__:run_model:325 - Flight: 4 occurs at 1704.0 on runway B - Delay of 624.0
+2026-01-17 11:18:11.858 | DEBUG    | __main__:run_model:325 - Flight: 5 occurs at 1608.0 on runway B - Delay of 528.0
+2026-01-17 11:18:11.859 | DEBUG    | __main__:run_model:325 - Flight: 6 occurs at 1512.0 on runway B - Delay of 432.0
+2026-01-17 11:18:11.859 | DEBUG    | __main__:run_model:325 - Flight: 7 occurs at 1416.0 on runway B - Delay of 336.0
+2026-01-17 11:18:11.859 | DEBUG    | __main__:run_model:328 - Total (non cost adjusted) delay: 2112.0, Cost adjusted delay: 6336.0
+2026-01-17 11:20:14.024 | DEBUG    | __main__:run_model:325 - Flight: 0 occurs at 96.0 on runway B - Delay of 96.0
+2026-01-17 11:20:14.024 | DEBUG    | __main__:run_model:325 - Flight: 1 occurs at 96.0 on runway A - Delay of 96.0
+2026-01-17 11:20:14.024 | DEBUG    | __main__:run_model:327 - Flight: 2 occurs at -0.0 on runway B
+2026-01-17 11:20:14.024 | DEBUG    | __main__:run_model:327 - Flight: 3 occurs at -0.0 on runway A
+2026-01-17 11:20:14.024 | DEBUG    | __main__:run_model:325 - Flight: 4 occurs at 1704.0 on runway B - Delay of 624.0
+2026-01-17 11:20:14.025 | DEBUG    | __main__:run_model:325 - Flight: 5 occurs at 1608.0 on runway B - Delay of 528.0
+2026-01-17 11:20:14.025 | DEBUG    | __main__:run_model:325 - Flight: 6 occurs at 1512.0 on runway B - Delay of 432.0
+2026-01-17 11:20:14.025 | DEBUG    | __main__:run_model:325 - Flight: 7 occurs at 1416.0 on runway B - Delay of 336.0
+2026-01-17 11:20:14.025 | DEBUG    | __main__:run_model:328 - Total (non cost adjusted) delay: 2112.0, Cost adjusted delay: 6336.0
+2026-01-17 11:20:52.402 | DEBUG    | __main__:run_model:325 - Flight: 0 occurs at 96.0 on runway B - Delay of 96.0
+2026-01-17 11:20:52.402 | DEBUG    | __main__:run_model:325 - Flight: 1 occurs at 96.0 on runway A - Delay of 96.0
+2026-01-17 11:20:52.402 | DEBUG    | __main__:run_model:327 - Flight: 2 occurs at -0.0 on runway B
+2026-01-17 11:20:52.402 | DEBUG    | __main__:run_model:327 - Flight: 3 occurs at -0.0 on runway A
+2026-01-17 11:20:52.403 | DEBUG    | __main__:run_model:325 - Flight: 4 occurs at 1704.0 on runway B - Delay of 624.0
+2026-01-17 11:20:52.403 | DEBUG    | __main__:run_model:325 - Flight: 5 occurs at 1608.0 on runway B - Delay of 528.0
+2026-01-17 11:20:52.403 | DEBUG    | __main__:run_model:325 - Flight: 6 occurs at 1512.0 on runway B - Delay of 432.0
+2026-01-17 11:20:52.403 | DEBUG    | __main__:run_model:325 - Flight: 7 occurs at 1416.0 on runway B - Delay of 336.0
+2026-01-17 11:20:52.403 | DEBUG    | __main__:run_model:328 - Total (non cost adjusted) delay: 2112.0, Cost adjusted delay: 6336.0
+2026-01-17 11:22:40.250 | DEBUG    | __main__:run_model:325 - Flight: 0 occurs at 96.0 on runway B - Delay of 96.0
+2026-01-17 11:22:40.250 | DEBUG    | __main__:run_model:325 - Flight: 1 occurs at 96.0 on runway A - Delay of 96.0
+2026-01-17 11:22:40.250 | DEBUG    | __main__:run_model:327 - Flight: 2 occurs at -0.0 on runway B
+2026-01-17 11:22:40.250 | DEBUG    | __main__:run_model:327 - Flight: 3 occurs at -0.0 on runway A
+2026-01-17 11:22:40.250 | DEBUG    | __main__:run_model:325 - Flight: 4 occurs at 1704.0 on runway B - Delay of 624.0
+2026-01-17 11:22:40.250 | DEBUG    | __main__:run_model:325 - Flight: 5 occurs at 1608.0 on runway B - Delay of 528.0
+2026-01-17 11:22:40.250 | DEBUG    | __main__:run_model:325 - Flight: 6 occurs at 1512.0 on runway B - Delay of 432.0
+2026-01-17 11:22:40.250 | DEBUG    | __main__:run_model:325 - Flight: 7 occurs at 1416.0 on runway B - Delay of 336.0
+2026-01-17 11:22:40.250 | DEBUG    | __main__:run_model:328 - Total (non cost adjusted) delay: 2112.0, Cost adjusted delay: 6336.0
+2026-01-17 11:22:59.968 | DEBUG    | __main__:run_model:325 - Flight: 0 occurs at 96.0 on runway A - Delay of 96.0
+2026-01-17 11:22:59.968 | DEBUG    | __main__:run_model:325 - Flight: 1 occurs at 96.0 on runway B - Delay of 96.0
+2026-01-17 11:22:59.969 | DEBUG    | __main__:run_model:327 - Flight: 2 occurs at 0.0 on runway B
+2026-01-17 11:22:59.969 | DEBUG    | __main__:run_model:327 - Flight: 3 occurs at 0.0 on runway A
+2026-01-17 11:22:59.969 | DEBUG    | __main__:run_model:328 - Total (non cost adjusted) delay: 192.0, Cost adjusted delay: 576.0
+2026-01-17 11:24:31.966 | DEBUG    | __main__:run_model:325 - Flight: 0 occurs at 96.0 on runway A - Delay of 96.0
+2026-01-17 11:24:31.966 | DEBUG    | __main__:run_model:325 - Flight: 1 occurs at 96.0 on runway B - Delay of 96.0
+2026-01-17 11:24:31.967 | DEBUG    | __main__:run_model:327 - Flight: 2 occurs at 0.0 on runway B
+2026-01-17 11:24:31.967 | DEBUG    | __main__:run_model:327 - Flight: 3 occurs at 0.0 on runway A
+2026-01-17 11:24:31.967 | DEBUG    | __main__:run_model:328 - Total (non cost adjusted) delay: 192.0, Cost adjusted delay: 576.0
+2026-01-17 11:24:42.020 | DEBUG    | __main__:run_model:325 - Flight: 0 occurs at 96.0 on runway B - Delay of 96.0
+2026-01-17 11:24:42.020 | DEBUG    | __main__:run_model:325 - Flight: 1 occurs at 96.0 on runway A - Delay of 96.0
+2026-01-17 11:24:42.020 | DEBUG    | __main__:run_model:327 - Flight: 2 occurs at -0.0 on runway B
+2026-01-17 11:24:42.020 | DEBUG    | __main__:run_model:327 - Flight: 3 occurs at -0.0 on runway A
+2026-01-17 11:24:42.020 | DEBUG    | __main__:run_model:325 - Flight: 4 occurs at 1704.0 on runway B - Delay of 624.0
+2026-01-17 11:24:42.020 | DEBUG    | __main__:run_model:325 - Flight: 5 occurs at 1608.0 on runway B - Delay of 528.0
+2026-01-17 11:24:42.020 | DEBUG    | __main__:run_model:325 - Flight: 6 occurs at 1512.0 on runway B - Delay of 432.0
+2026-01-17 11:24:42.021 | DEBUG    | __main__:run_model:325 - Flight: 7 occurs at 1416.0 on runway B - Delay of 336.0
+2026-01-17 11:24:42.021 | DEBUG    | __main__:run_model:328 - Total (non cost adjusted) delay: 2112.0, Cost adjusted delay: 6336.0
+2026-01-17 11:24:52.576 | DEBUG    | __main__:run_model:325 - Flight: 0 occurs at 96.0 on runway B - Delay of 96.0
+2026-01-17 11:24:52.576 | DEBUG    | __main__:run_model:325 - Flight: 1 occurs at 96.0 on runway A - Delay of 96.0
+2026-01-17 11:24:52.576 | DEBUG    | __main__:run_model:327 - Flight: 2 occurs at -0.0 on runway B
+2026-01-17 11:24:52.576 | DEBUG    | __main__:run_model:327 - Flight: 3 occurs at -0.0 on runway A
+2026-01-17 11:24:52.576 | DEBUG    | __main__:run_model:325 - Flight: 4 occurs at 1704.0 on runway B - Delay of 624.0
+2026-01-17 11:24:52.576 | DEBUG    | __main__:run_model:325 - Flight: 5 occurs at 1608.0 on runway B - Delay of 528.0
+2026-01-17 11:24:52.577 | DEBUG    | __main__:run_model:325 - Flight: 6 occurs at 1512.0 on runway B - Delay of 432.0
+2026-01-17 11:24:52.577 | DEBUG    | __main__:run_model:325 - Flight: 7 occurs at 1416.0 on runway B - Delay of 336.0
+2026-01-17 11:24:52.577 | DEBUG    | __main__:run_model:328 - Total (non cost adjusted) delay: 2112.0, Cost adjusted delay: 6336.0
+2026-01-17 11:26:55.709 | DEBUG    | __main__:run_model:325 - Flight: 0 occurs at 96.0 on runway B - Delay of 96.0
+2026-01-17 11:26:55.709 | DEBUG    | __main__:run_model:325 - Flight: 1 occurs at 96.0 on runway A - Delay of 96.0
+2026-01-17 11:26:55.710 | DEBUG    | __main__:run_model:327 - Flight: 2 occurs at -0.0 on runway B
+2026-01-17 11:26:55.710 | DEBUG    | __main__:run_model:327 - Flight: 3 occurs at -0.0 on runway A
+2026-01-17 11:26:55.710 | DEBUG    | __main__:run_model:325 - Flight: 4 occurs at 1704.0 on runway B - Delay of 624.0
+2026-01-17 11:26:55.710 | DEBUG    | __main__:run_model:325 - Flight: 5 occurs at 1608.0 on runway B - Delay of 528.0
+2026-01-17 11:26:55.710 | DEBUG    | __main__:run_model:325 - Flight: 6 occurs at 1512.0 on runway B - Delay of 432.0
+2026-01-17 11:26:55.710 | DEBUG    | __main__:run_model:325 - Flight: 7 occurs at 1416.0 on runway B - Delay of 336.0
+2026-01-17 11:26:55.710 | DEBUG    | __main__:run_model:328 - Total (non cost adjusted) delay: 2112.0, Cost adjusted delay: 6336.0
+2026-01-17 11:27:27.520 | DEBUG    | __main__:run_model:325 - Flight: 0 occurs at 96.0 on runway B - Delay of 96.0
+2026-01-17 11:27:27.520 | DEBUG    | __main__:run_model:325 - Flight: 1 occurs at 96.0 on runway A - Delay of 96.0
+2026-01-17 11:27:27.520 | DEBUG    | __main__:run_model:327 - Flight: 2 occurs at -0.0 on runway B
+2026-01-17 11:27:27.520 | DEBUG    | __main__:run_model:327 - Flight: 3 occurs at -0.0 on runway A
+2026-01-17 11:27:27.520 | DEBUG    | __main__:run_model:325 - Flight: 4 occurs at 1704.0 on runway B - Delay of 624.0
+2026-01-17 11:27:27.520 | DEBUG    | __main__:run_model:325 - Flight: 5 occurs at 1608.0 on runway B - Delay of 528.0
+2026-01-17 11:27:27.520 | DEBUG    | __main__:run_model:325 - Flight: 6 occurs at 1512.0 on runway B - Delay of 432.0
+2026-01-17 11:27:27.520 | DEBUG    | __main__:run_model:325 - Flight: 7 occurs at 1416.0 on runway B - Delay of 336.0
+2026-01-17 11:27:27.521 | DEBUG    | __main__:run_model:328 - Total (non cost adjusted) delay: 2112.0, Cost adjusted delay: 6336.0
+2026-01-17 11:27:52.019 | DEBUG    | __main__:run_model:325 - Flight: 0 occurs at 96.0 on runway A - Delay of 96.0
+2026-01-17 11:27:52.019 | DEBUG    | __main__:run_model:325 - Flight: 1 occurs at 96.0 on runway B - Delay of 96.0
+2026-01-17 11:27:52.019 | DEBUG    | __main__:run_model:327 - Flight: 2 occurs at 0.0 on runway B
+2026-01-17 11:27:52.020 | DEBUG    | __main__:run_model:327 - Flight: 3 occurs at 0.0 on runway A
+2026-01-17 11:27:52.020 | DEBUG    | __main__:run_model:328 - Total (non cost adjusted) delay: 192.0, Cost adjusted delay: 576.0
+2026-01-17 11:37:52.426 | DEBUG    | __main__:run_model:325 - Flight: 0 occurs at 96.0 on runway A - Delay of 96.0
+2026-01-17 11:37:52.426 | DEBUG    | __main__:run_model:325 - Flight: 1 occurs at 96.0 on runway B - Delay of 96.0
+2026-01-17 11:37:52.426 | DEBUG    | __main__:run_model:327 - Flight: 2 occurs at 0.0 on runway B
+2026-01-17 11:37:52.426 | DEBUG    | __main__:run_model:327 - Flight: 3 occurs at 0.0 on runway A
+2026-01-17 11:37:52.426 | DEBUG    | __main__:run_model:328 - Total (non cost adjusted) delay: 192.0, Cost adjusted delay: 576.0
+2026-01-17 11:38:23.218 | DEBUG    | __main__:run_model:325 - Flight: 0 occurs at 96.0 on runway B - Delay of 96.0
+2026-01-17 11:38:23.230 | DEBUG    | __main__:run_model:325 - Flight: 1 occurs at 96.0 on runway A - Delay of 96.0
+2026-01-17 11:38:23.230 | DEBUG    | __main__:run_model:327 - Flight: 2 occurs at -0.0 on runway B
+2026-01-17 11:38:23.230 | DEBUG    | __main__:run_model:327 - Flight: 3 occurs at -0.0 on runway A
+2026-01-17 11:38:23.230 | DEBUG    | __main__:run_model:325 - Flight: 4 occurs at 1704.0 on runway B - Delay of 624.0
+2026-01-17 11:38:23.230 | DEBUG    | __main__:run_model:325 - Flight: 5 occurs at 1608.0 on runway B - Delay of 528.0
+2026-01-17 11:38:23.230 | DEBUG    | __main__:run_model:325 - Flight: 6 occurs at 1512.0 on runway B - Delay of 432.0
+2026-01-17 11:38:23.231 | DEBUG    | __main__:run_model:325 - Flight: 7 occurs at 1416.0 on runway B - Delay of 336.0
+2026-01-17 11:38:23.231 | DEBUG    | __main__:run_model:328 - Total (non cost adjusted) delay: 2112.0, Cost adjusted delay: 6336.0
+2026-01-17 11:38:46.767 | DEBUG    | __main__:run_model:325 - Flight: 0 occurs at 96.0 on runway B - Delay of 96.0
+2026-01-17 11:38:46.768 | DEBUG    | __main__:run_model:325 - Flight: 1 occurs at 96.0 on runway A - Delay of 96.0
+2026-01-17 11:38:46.768 | DEBUG    | __main__:run_model:327 - Flight: 2 occurs at -0.0 on runway B
+2026-01-17 11:38:46.768 | DEBUG    | __main__:run_model:327 - Flight: 3 occurs at -0.0 on runway A
+2026-01-17 11:38:46.768 | DEBUG    | __main__:run_model:325 - Flight: 4 occurs at 1704.0 on runway B - Delay of 624.0
+2026-01-17 11:38:46.768 | DEBUG    | __main__:run_model:325 - Flight: 5 occurs at 1608.0 on runway B - Delay of 528.0
+2026-01-17 11:38:46.768 | DEBUG    | __main__:run_model:325 - Flight: 6 occurs at 1512.0 on runway B - Delay of 432.0
+2026-01-17 11:38:46.768 | DEBUG    | __main__:run_model:325 - Flight: 7 occurs at 1416.0 on runway B - Delay of 336.0
+2026-01-17 11:38:46.768 | DEBUG    | __main__:run_model:328 - Total (non cost adjusted) delay: 2112.0, Cost adjusted delay: 6336.0
+2026-01-17 11:42:33.129 | DEBUG    | __main__:run_model:325 - Flight: 0 occurs at 96.0 on runway A - Delay of 96.0
+2026-01-17 11:42:33.130 | DEBUG    | __main__:run_model:325 - Flight: 1 occurs at 96.0 on runway B - Delay of 96.0
+2026-01-17 11:42:33.130 | DEBUG    | __main__:run_model:327 - Flight: 2 occurs at 0.0 on runway B
+2026-01-17 11:42:33.131 | DEBUG    | __main__:run_model:327 - Flight: 3 occurs at 0.0 on runway A
+2026-01-17 11:42:33.131 | DEBUG    | __main__:run_model:328 - Total (non cost adjusted) delay: 192.0, Cost adjusted delay: 576.0
+2026-01-17 11:43:02.751 | DEBUG    | __main__:run_model:325 - Flight: 0 occurs at 96.0 on runway B - Delay of 96.0
+2026-01-17 11:43:02.753 | DEBUG    | __main__:run_model:325 - Flight: 1 occurs at 96.0 on runway A - Delay of 96.0
+2026-01-17 11:43:02.753 | DEBUG    | __main__:run_model:327 - Flight: 2 occurs at -0.0 on runway B
+2026-01-17 11:43:02.753 | DEBUG    | __main__:run_model:327 - Flight: 3 occurs at -0.0 on runway A
+2026-01-17 11:43:02.753 | DEBUG    | __main__:run_model:325 - Flight: 4 occurs at 1704.0 on runway B - Delay of 624.0
+2026-01-17 11:43:02.753 | DEBUG    | __main__:run_model:325 - Flight: 5 occurs at 1608.0 on runway B - Delay of 528.0
+2026-01-17 11:43:02.753 | DEBUG    | __main__:run_model:325 - Flight: 6 occurs at 1512.0 on runway B - Delay of 432.0
+2026-01-17 11:43:02.753 | DEBUG    | __main__:run_model:325 - Flight: 7 occurs at 1416.0 on runway B - Delay of 336.0
+2026-01-17 11:43:02.753 | DEBUG    | __main__:run_model:328 - Total (non cost adjusted) delay: 2112.0, Cost adjusted delay: 6336.0
+2026-01-17 11:43:27.927 | DEBUG    | __main__:run_model:325 - Flight: 0 occurs at 96.0 on runway B - Delay of 96.0
+2026-01-17 11:43:27.928 | DEBUG    | __main__:run_model:325 - Flight: 1 occurs at 96.0 on runway A - Delay of 96.0
+2026-01-17 11:43:27.928 | DEBUG    | __main__:run_model:327 - Flight: 2 occurs at -0.0 on runway B
+2026-01-17 11:43:27.928 | DEBUG    | __main__:run_model:327 - Flight: 3 occurs at -0.0 on runway A
+2026-01-17 11:43:27.928 | DEBUG    | __main__:run_model:325 - Flight: 4 occurs at 1704.0 on runway B - Delay of 624.0
+2026-01-17 11:43:27.933 | DEBUG    | __main__:run_model:325 - Flight: 5 occurs at 1608.0 on runway B - Delay of 528.0
+2026-01-17 11:43:27.934 | DEBUG    | __main__:run_model:325 - Flight: 6 occurs at 1512.0 on runway B - Delay of 432.0
+2026-01-17 11:43:27.934 | DEBUG    | __main__:run_model:325 - Flight: 7 occurs at 1416.0 on runway B - Delay of 336.0
+2026-01-17 11:43:27.934 | DEBUG    | __main__:run_model:328 - Total (non cost adjusted) delay: 2112.0, Cost adjusted delay: 6336.0
