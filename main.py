@@ -1,8 +1,7 @@
 from collections import Counter
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
 from functools import cache
-from itertools import count
 from logging import DEBUG, INFO
 from sys import stdout
 from typing import Literal
@@ -45,7 +44,7 @@ from matplotlib import pyplot
 
 @dataclass
 class Aircraft:
-    identifier: int = field(default_factory=count().__next__, init=False)
+    identifier: int
     target_time:int
     ac_class:Literal["Medium","757","Heavy","Super"]
     direction:Literal["Takeoff","Landing"]
@@ -77,8 +76,10 @@ def load_aircraft(filename:str)->list[Aircraft]:
     carry = []
     with open(filename,"r") as fs:
         reader = csv.reader(fs)
+        count =0
         for row in reader:
-            carry.append(Aircraft(int(row[0]),map_type(row[1]),map_direction(row[2])))
+            carry.append(Aircraft(count,int(row[0]),map_type(row[1]),map_direction(row[2])))
+            count += 1
     return carry
 
 
@@ -124,9 +125,12 @@ class Mode(Enum):
     infeasible_landing_delay = 2
     delayed_after_plow = 4
     too_short_one_plow = 5
-    validationc9 = 6
-    validationc1 = 7
-
+    validationc1 = 6
+    validationc5 = 7
+    validationc9 = 8
+    validationc13 = 9
+    validationc17 = 10
+    validationc21 = 11
 
 def callback(model, where):
     if where == GRB.Callback.MIPNODE:
@@ -183,6 +187,20 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
             num_plows = 1
             num_runways = 2
             aircraft = load_aircraft("test_file_plow.csv")
+        case Mode.validationc1:
+            planning_horizon = 3664
+            num_plows = 1
+            num_runways = 2
+            runway_unsafe_times = [1500,1500]
+            plowing_time = 1200
+            aircraft = load_aircraft("munichc1.csv")
+        case Mode.validationc5:
+            planning_horizon = 3097
+            num_plows = 2
+            num_runways = 3
+            runway_unsafe_times = [1500,1500,1500]
+            plowing_time = 1200
+            aircraft = load_aircraft("munichc5.csv")
         case Mode.validationc9:
             planning_horizon = 3600
             num_plows = 1
@@ -190,6 +208,27 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
             runway_unsafe_times = [600,1500]
             plowing_time = 1200
             aircraft = load_aircraft("munichc9.csv")
+        case Mode.validationc13:
+            planning_horizon = 2970
+            num_plows = 2
+            num_runways = 3
+            runway_unsafe_times = [600,1500,2400]
+            plowing_time = 1200
+            aircraft = load_aircraft("munichc13.csv")
+        case Mode.validationc17:
+            planning_horizon = 3489
+            num_plows = 1
+            num_runways = 2
+            runway_unsafe_times = [600,3600]
+            plowing_time = 1200
+            aircraft = load_aircraft("munichc17.csv")
+        case Mode.validationc21:
+            planning_horizon = 3058
+            num_plows = 1
+            num_runways = 3
+            runway_unsafe_times = [1500,3600,600]
+            plowing_time = 1200
+            aircraft = load_aircraft("munichc21.csv")
         case _:
             raise RuntimeError("Not Implemented")
 
@@ -333,7 +372,7 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
             logger.debug(f"Flight: {aircraft[i].identifier} occurs at {event_times[i].X} on runway {match_runway(aircraft[i])} - Delay of {event_times[i].X - aircraft[i].target_time}")
         else:
             logger.debug(f"Flight: {aircraft[i].identifier} occurs at {event_times[i].X} on runway {match_runway(aircraft[i])}")
-    logger.debug(f"Total (non cost adjusted) delay: {total_delay}, Cost adjusted delay: {model.ObjVal}")
+    logger.info(f"Total (non cost adjusted) delay: {total_delay}, Cost adjusted delay: {model.ObjVal}")
     for i in runway_flights.keys():
         if len(runway_flights[i]) == 0:
             continue
@@ -463,4 +502,11 @@ if __name__ == "__main__":
     # run_model(Mode.delayed_after_plow,True,num_plows=1,num_runways=2,file_name="verification-delayed-afterplow")
     # run_model(Mode.infeasible_landing_delay,True,num_plows=1,num_runways=2,file_name="verification-infeasible-delay")
     # run_model(Mode.too_short_one_plow,True,num_plows=1,num_runways=2,file_name="verification-one-plow")
-    run_model(Mode.validationc9,True,num_plows=1,runway_unsafe_times=[0,1500,600,1500,0],file_name="snow-0")
+
+    #Validation
+    run_model(Mode.validationc1,True,file_name="validation-1")
+    run_model(Mode.validationc5,True,file_name="validation-5")
+    run_model(Mode.validationc9,True,file_name="validation-9")
+    run_model(Mode.validationc13,True,file_name="validation-13")
+    run_model(Mode.validationc17,True,file_name="validation-17")
+    run_model(Mode.validationc21,True,file_name="validation-21")
