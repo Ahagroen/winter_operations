@@ -10,6 +10,7 @@ from gurobipy import GRB, LinExpr, Model, quicksum
 import csv
 from loguru import logger
 import time
+from os import path
 
 from matplotlib import pyplot
 
@@ -343,7 +344,7 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
         pyplot.show()
     else:
         pyplot.gcf().set_size_inches(12,4)
-        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-{file_name}-times.svg",dpi=100,bbox_inches='tight')
+        pyplot.savefig(path.join("outputs",f"{num_runways}-{num_plows}-{file_name}-times.svg"),dpi=100,bbox_inches='tight')
         pyplot.close()
     carry = []
     for i in delays.keys():
@@ -358,7 +359,7 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
         pyplot.show()
     else:
         pyplot.gcf().set_size_inches(16,6)
-        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-{file_name}-delays.svg",dpi=100,bbox_inches='tight')
+        pyplot.savefig(path.join("outputs",f"{num_runways}-{num_plows}-{file_name}-delays.svg"),dpi=100,bbox_inches='tight')
         pyplot.close()
     c = Counter(carry)
     for i in c.keys():
@@ -370,7 +371,7 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
         pyplot.show()
     else:
         pyplot.gcf().set_size_inches(12,8)
-        pyplot.savefig(f"outputs\\{num_runways}-{num_plows}-{file_name}-waiting.svg",dpi=100,bbox_inches='tight')
+        pyplot.savefig(path.join("outputs",f"{num_runways}-{num_plows}-{file_name}-waiting.svg"),dpi=100,bbox_inches='tight')
         pyplot.close()
         return total_delay,model.ObjVal
 
