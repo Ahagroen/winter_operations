@@ -47,7 +47,7 @@ from matplotlib import pyplot
 class Aircraft:
     identifier: int = field(default_factory=count().__next__, init=False)
     target_time:int
-    ac_class:Literal["Medium","Heavy","Super"]
+    ac_class:Literal["Medium","757","Heavy","Super"]
     direction:Literal["Takeoff","Landing"]
     
 def map_type(type):
@@ -58,6 +58,8 @@ def map_type(type):
             return "Medium"
         case "S":
             return "Super"
+        case "7":
+            return "757"
         case _:
             raise RuntimeError("Invalid type in csv")
 
@@ -87,29 +89,33 @@ def seperation_time(ac1:Aircraft,ac2:Aircraft):
         case "Landing":
             a = 0
         case "Takeoff":
-            a = 3
+            a = 4
     match ac1.ac_class:
         case "Medium":
             a += 0
-        case "Heavy":
+        case "757":
             a += 1
-        case "Super":
+        case "Heavy":
             a += 2
+        case "Super":
+            a += 3
 
     match ac2.direction:
         case "Landing":
             b = 0
         case "Takeoff":
-            b = 3
+            b = 4
     match ac2.ac_class:
         case "Medium":
             b += 0
+        case "757":
+            b+=1
         case "Heavy":
-            b += 1
-        case "Super":
             b += 2
+        case "Super":
+            b += 3
     
-    matrix = [[69,60,60,75,75,75],[157,96,96,75,75,75],[180,120,120,180,120,120],[60,60,60,60,60,60],[60,60,60,120,90,90],[180,120,120,180,120,120]]
+    matrix = [[69,69,60,60,75,75,75,75],[157,157,96,96,75,75,75,75],[157,157,96,96,75,75,75,75],[180,180,120,120,180,180,120,120],[60,60,60,60,60,60,60,60],[60,60,60,60,120,120,90,90],[60,60,60,60,120,120,90,90],[180,180,120,120,180,180,120,120]]
     return matrix[a][b]
 
 class Mode(Enum):
@@ -189,7 +195,7 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
     #Constants
     sep_a_cleaning = 120 #No idea, not in literature
     t_snow_removal = plowing_time
-    cost_coefficient = {"Medium":1,"Heavy":3,"Super":4}
+    cost_coefficient = {"Medium":1,"757":2,"Heavy":3,"Super":4}
     runway_travel_matrix = [[0,600,1200,900,1200],[900,0,1200,1200,600],[1500,1500,0,600,900],[1500,900,900,0,1500],[600,1200,900,1200,0]] #This +20min is the value of Q
 
     #Run-specific Constants
