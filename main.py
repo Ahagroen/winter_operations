@@ -58,7 +58,7 @@ def map_type(type):
             return "Medium"
         case "S":
             return "Super"
-        case "7":
+        case "B":
             return "757"
         case _:
             raise RuntimeError("Invalid type in csv")
@@ -124,7 +124,8 @@ class Mode(Enum):
     infeasible_landing_delay = 2
     delayed_after_plow = 4
     too_short_one_plow = 5
-    validation = 6
+    validationc9 = 6
+    validationc1 = 7
 
 
 def callback(model, where):
@@ -182,7 +183,7 @@ def run_model(mode:Mode,returns:bool,plowing_time:int=20*60,num_runways:int=3,nu
             num_plows = 1
             num_runways = 2
             aircraft = load_aircraft("test_file_plow.csv")
-        case Mode.validation:
+        case Mode.validationc9:
             planning_horizon = 3600
             num_plows = 1
             num_runways = 2
@@ -462,4 +463,4 @@ if __name__ == "__main__":
     # run_model(Mode.delayed_after_plow,True,num_plows=1,num_runways=2,file_name="verification-delayed-afterplow")
     # run_model(Mode.infeasible_landing_delay,True,num_plows=1,num_runways=2,file_name="verification-infeasible-delay")
     # run_model(Mode.too_short_one_plow,True,num_plows=1,num_runways=2,file_name="verification-one-plow")
-    # run_model(Mode.large_scale,True,num_plows=1,runway_unsafe_times=[0,1500,600,1500,0],file_name="snow-0")
+    run_model(Mode.validationc9,True,num_plows=1,runway_unsafe_times=[0,1500,600,1500,0],file_name="snow-0")
